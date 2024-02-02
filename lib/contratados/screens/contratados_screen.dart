@@ -5,6 +5,7 @@ import 'package:contratos_mpf/contratados/widgets/contratados_lista.dart';
 import 'package:contratos_mpf/nav_menu.dart';
 import 'package:contratos_mpf/service.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ContratadosScreen extends StatefulWidget {
   const ContratadosScreen({super.key});
@@ -39,8 +40,9 @@ class _ContratadosScreenState extends State<ContratadosScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => ContratadosFiltroScreen(),
+            PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: const ContratadosFiltroScreen(),
             ),
           );
         },
@@ -51,10 +53,7 @@ class _ContratadosScreenState extends State<ContratadosScreen> {
         centerTitle: true,
       ),
       body: Column(
-        children: [
-          CampoBusca(),
-          ContratadosLista(contratados: _contratados)
-        ],
+        children: [CampoBusca(), ContratadosLista(contratados: _contratados)],
       ),
     );
   }

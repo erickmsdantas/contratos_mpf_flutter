@@ -8,6 +8,7 @@ import 'package:contratos_mpf/widgets/custom_radio_list.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
+import 'package:page_transition/page_transition.dart';
 
 const double _pageBreakpoint = 768.0;
 
@@ -192,8 +193,9 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ContratoDetalhes(contrato: item),
+                PageTransition(
+                  type: PageTransitionType.leftToRight,
+                  child: ContratoDetalhes(contrato: item),
                 ),
               );
             },

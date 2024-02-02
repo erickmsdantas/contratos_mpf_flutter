@@ -4,6 +4,7 @@ import 'package:contratos_mpf/utils/ordem.dart';
 import 'package:contratos_mpf/widgets/custom_radio_list.dart';
 import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
+import 'package:page_transition/page_transition.dart';
 
 enum ClassificacaoContratados { cnpjcpf, nome, qtdContratos }
 
@@ -140,9 +141,12 @@ class _ContratadosListaState extends State<ContratadosLista> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ContratadoDetalhes(contratado: widget.contratados[index])),
+              PageTransition(
+                type: PageTransitionType.leftToRight,
+                child: ContratadoDetalhes(
+                  contratado: widget.contratados[index],
+                ),
+              ),
             );
           },
           title: Text(widget.contratados[index].cpfCnpj),

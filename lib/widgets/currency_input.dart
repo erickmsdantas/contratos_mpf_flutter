@@ -13,8 +13,6 @@ class CurrencyInputFormatter extends TextInputFormatter {
     String parteReais = split[0].replaceAll('.', '');
     String? parteCent = split.length > 1 ? split[1] : null;
 
-    if (parteCent != null) print(parteCent);
-
     String newText = '';
 
     int count = 0;

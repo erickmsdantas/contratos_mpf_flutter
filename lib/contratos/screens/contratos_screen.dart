@@ -4,6 +4,7 @@ import 'package:contratos_mpf/contratos/widgets/contratos_tabela.dart';
 import 'package:contratos_mpf/nav_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 
 enum ModoExibicao { lista, tabela }
 
@@ -31,8 +32,10 @@ class _ContratosScreenState extends State<ContratosScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const ContratosFiltroScreen()),
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                child: ContratosFiltroScreen(),
+              ),
             );
           },
           child: const Icon(Icons.filter_list),
@@ -43,10 +46,9 @@ class _ContratosScreenState extends State<ContratosScreen> {
             onPressed: () {
               setState(
                 () {
-                  if (_modoExibicao == ModoExibicao.lista)
-                     {
-                       _modoExibicao = ModoExibicao.tabela;
-                     } else {
+                  if (_modoExibicao == ModoExibicao.lista) {
+                    _modoExibicao = ModoExibicao.tabela;
+                  } else {
                     _modoExibicao = ModoExibicao.lista;
                   }
                 },
@@ -58,11 +60,9 @@ class _ContratosScreenState extends State<ContratosScreen> {
           ),
         ]),
         body: Container(
-          child:
-            _modoExibicao == ModoExibicao.lista
+            child: _modoExibicao == ModoExibicao.lista
                 ? ContratosModoLista()
-                : ContratosModoTabela()
-        ),
+                : ContratosModoTabela()),
       ),
     );
   }

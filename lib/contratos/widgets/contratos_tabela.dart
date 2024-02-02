@@ -1,7 +1,9 @@
 import 'package:contratos_mpf/contratos/models/contrato.dart';
 import 'package:contratos_mpf/contratos/widgets/campo_busca.dart';
 import 'package:contratos_mpf/service.dart';
+import 'package:contratos_mpf/contratos/screens/contrato_detalhes.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ContratosModoTabela extends StatefulWidget {
   ContratosModoTabela({super.key});
@@ -44,11 +46,14 @@ class _ContratosModoTabelaState extends State<ContratosModoTabela> {
         DataColumn(label: Text("Quantidade")),
         DataColumn(label: Text("Valor Total do Item")),
         DataColumn(label: Text("Valor Total do Contrato")),
+        DataColumn(label: Text("Ações")),
       ],
       rows: List<DataRow>.generate(_contratos.length, (index) {
         var e = _contratos[index];
         return DataRow(
-          color: MaterialStateProperty.all(index % 2 != 0 ? Colors.white : const Color.fromARGB(255, 250, 250, 250)),
+          color: MaterialStateProperty.all(index % 2 != 0
+              ? Colors.white
+              : const Color.fromARGB(255, 250, 250, 250)),
           cells: <DataCell>[
             DataCell(Text(e.unidade)),
             DataCell(Text(e.numero)),
@@ -76,6 +81,18 @@ class _ContratosModoTabelaState extends State<ContratosModoTabela> {
             DataCell(Text(e.quantidade)),
             DataCell(Text(e.valorTotalDoItem)),
             DataCell(Text(e.valorTotalDoContrato)),
+            DataCell(TextButton(
+              child: const Text("Ver Detalhes"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.leftToRight,
+                    child: ContratoDetalhes(contrato: e),
+                  ),
+                );
+              },
+            )),
           ],
         );
       }).toList(),

@@ -11,15 +11,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = ColorScheme.fromSeed(
       brightness: MediaQuery.platformBrightnessOf(context),
-      seedColor: Color(0xFF629784),
-      primary: Color(0xFF629784),
-      outline: Color(0xFF629784),
+      seedColor: const Color(0xFF629784),
+      primary:    const Color(0xFF629784),
+      outline: const Color(0xFF629784),
     );
 
     return MaterialApp(
       title: 'Contratos',
       theme: ThemeData(useMaterial3: false, colorScheme: colorScheme),
-      home: ContratosScreen(),
+      home: const ContratosScreen(),
     );
   }
 }
