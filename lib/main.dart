@@ -1,7 +1,24 @@
-import 'package:contratos_mpf/contratos/screens/contratos_screen.dart';
+import 'package:contratos_mpf/authentication_screen.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:firebase_auth/firebase_auth.dart' as fba;
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await firebase_core.Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  //await fba.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+    GoogleProvider(clientId: 'project-452014915095'),
+  ]);
+
   runApp(const MyApp());
 }
 
@@ -19,7 +36,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Contratos',
       theme: ThemeData(useMaterial3: false, colorScheme: colorScheme),
-      home: const ContratosScreen(),
+        home: const AuthenticationScreen(),
     );
   }
 }

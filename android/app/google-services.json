@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "452014915095",
+    "project_id": "projeto-programacao-movel",
+    "storage_bucket": "projeto-programacao-movel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452014915095:android:e2c4f30933818b5c7ee652",
+        "android_client_info": {
+          "package_name": "com.example.contratos_mpf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrAQxP5ad9lg43vrAD0c0LS72R95YGpzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
