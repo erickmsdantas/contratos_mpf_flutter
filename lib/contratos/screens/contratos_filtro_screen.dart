@@ -1,7 +1,7 @@
 import 'package:contratos_mpf/service.dart';
 import 'package:contratos_mpf/widgets/combo_box.dart';
-import 'package:contratos_mpf/widgets/custom_radio_button.dart';
-import 'package:contratos_mpf/widgets/custom_radio_list.dart';
+import 'package:contratos_mpf/widgets/select.dart';
+import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:contratos_mpf/widgets/filtro_item.dart';
 import 'package:contratos_mpf/widgets/filtro_item_intervalo.dart';
 import 'package:contratos_mpf/widgets/filtro_item_periodo.dart';
@@ -57,7 +57,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
       ),
       child: Column(
         children: [
-          CustomRadioList<String>(
+          MultipleSelection<String>(
             groupValue: _unidadesGestorasSelecionadas,
             itens: unidadesGestoras.entries
                 .map(
@@ -110,7 +110,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          CustomRadioButton(
+          /*CustomRadioButton(
             texto: "Ativo",
             valor: 1,
             grupo: 0,
@@ -119,7 +119,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
             texto: "Concluido",
             valor: 2,
             grupo: 0,
-          ),
+          ),*/
         ],
       ),
     );

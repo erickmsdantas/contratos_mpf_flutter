@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "452014915095",
+    "firebase_url": "https://projeto-programacao-movel-default-rtdb.firebaseio.com",
     "project_id": "projeto-programacao-movel",
     "storage_bucket": "projeto-programacao-movel.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.contratos_mpf"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "452014915095-dmu2veeq3h1j31h00kgk6ar8ijf3e1dm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.contratos_mpf",
+            "certificate_hash": "20550a1f433961743b511e19eafbe25ea5d1d002"
+          }
+        },
+        {
+          "client_id": "452014915095-4k1te8u76smcjsngfn8oc8dmuvoc51ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCrAQxP5ad9lg43vrAD0c0LS72R95YGpzQ"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452014915095-4k1te8u76smcjsngfn8oc8dmuvoc51ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

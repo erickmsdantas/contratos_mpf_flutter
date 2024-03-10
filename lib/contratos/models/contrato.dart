@@ -1,3 +1,6 @@
+import 'package:contratos_mpf/contratos/models/item.dart';
+import 'package:contratos_mpf/utils/date_time.dart';
+
 class Contrato {
   String numero = '';
   String unidade = '';
@@ -7,23 +10,24 @@ class Contrato {
   DateTime inicioVigencia = DateTime.now();
   DateTime terminoVigencia = DateTime.now();
   String situacao = '';
-  String itemFornecido = '';
   String valorTotalDoContrato = '';
   String contratado = '';
   List<String> socios = [];
 
-  String valorUnitario = '';
-  String quantidade = '';
-  String valorTotalDoItem = '';
-
+  List<Item> itens = [];
 
   Contrato();
 
-  Contrato.fromJson(Map<String, dynamic> json) {
-    numero = json['numero'];
-    unidade = json['unidade'];
+  Contrato.fromJson(String id, Map<String, dynamic> json) {
+    numero = id.toString().replaceAll('.', '/');
+    //unidade = json['unidade'];
     objeto = json['objeto'];
-    dataPublicacao = DateTime.parse(json['data_publicacao']);
-    contratado = json['contratado']['identificador'];
+    dataPublicacao =
+        DateTimeUtils().parseDate(json['data_publicacao'].toString())!;
+    nrEdital = json['nr_edital'];
+    inicioVigencia = DateTimeUtils().parseDate(json['inicio'].toString())!;
+    terminoVigencia = DateTimeUtils().parseDate(json['termino'].toString())!;
+    situacao = json['situacao'];
+    valorTotalDoContrato = json['valor_total'];
   }
 }

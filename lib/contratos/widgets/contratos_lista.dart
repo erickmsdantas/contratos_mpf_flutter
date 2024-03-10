@@ -1,12 +1,11 @@
-import 'package:contratos_mpf/constants.dart';
-import 'package:contratos_mpf/contratos/models/contrato.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contratos_mpf/contratos/screens/contrato_detalhes.dart';
 import 'package:contratos_mpf/contratos/widgets/campo_busca.dart';
-import 'package:contratos_mpf/service.dart';
+import 'package:contratos_mpf/firebase_repository.dart';
 import 'package:contratos_mpf/utils/ordem.dart';
-import 'package:contratos_mpf/widgets/custom_radio_list.dart';
+import 'package:contratos_mpf/widgets/select.dart';
+import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -32,38 +31,9 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
 
   OrdemClassificacao _ordemClassificacao = OrdemClassificacao.crescente;
 
-  int qtdContratos = 0;
-
-  final PagingController<int, Contrato> _pagingController =
-      PagingController(firstPageKey: 0);
-
   @override
   void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
-
     super.initState();
-  }
-
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      final newItems = await ApiService().getContratos();
-
-      setState(() {
-        qtdContratos = newItems.length;
-      });
-
-      final isLastPage = newItems.length < ApiConstants.pageSize;
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
   }
 
   SliverWoltModalSheetPage classificarContratos(
@@ -90,42 +60,45 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
           child: const Text("Aplicar"),
           onPressed: () {
             Navigator.of(modalSheetContext).pop();
+            setState(() {});
           },
         ),
       ),
       child: Column(
         children: [
-          CustomRadioList(
-            groupValue: [_classificacaoContratos],
+          Select(
+            groupValue: _classificacaoContratos,
             itens: const [
-              RadioItem(
+              SelectItem(
+                title: "Número do Contrato",
+                value: ClassificacaoContratos.nrContrato,
+              ),
+              SelectItem(
                 title: "CPF/CNP",
                 value: ClassificacaoContratos.cnpjcpf,
               ),
-              RadioItem(
+              SelectItem(
                 title: "Início Vigência",
                 value: ClassificacaoContratos.inicioVigencia,
               ),
-              RadioItem(
+              SelectItem(
                 title: "Termino Vigência",
                 value: ClassificacaoContratos.terminoVigencia,
               )
             ],
             onChange: (ClassificacaoContratos value) {
-              setState(() {
-                _classificacaoContratos = value;
-              });
+              _classificacaoContratos = value;
             },
           ),
           const Divider(),
-          CustomRadioList(
-            groupValue: [_ordemClassificacao],
+          Select(
+            groupValue: _ordemClassificacao,
             itens: const [
-              RadioItem(
+              SelectItem(
                 title: "Crescente",
                 value: OrdemClassificacao.crescente,
               ),
-              RadioItem(
+              SelectItem(
                 title: "Decrescente",
                 value: OrdemClassificacao.decrescente,
               )
@@ -139,7 +112,7 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
     );
   }
 
-  Widget mostarResultadosBusca(BuildContext context) {
+  Widget mostarResultadosBusca(BuildContext context, qtdContratos) {
     return Row(
       children: [
         Text(
@@ -180,98 +153,135 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
     );
   }
 
-  Widget criarLista() {
-    return RefreshIndicator(
-      onRefresh: () => Future.sync(
-        () => _pagingController.refresh(),
-      ),
-      child: PagedListView<int, Contrato>.separated(
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<Contrato>(
-          animateTransitions: true,
-          itemBuilder: (context, item, index) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.leftToRight,
-                  child: ContratoDetalhes(contrato: item),
-                ),
-              );
-            },
-            child: Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        item.numero,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF525252),
-                          fontFamily: 'Source Sans Pro',
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        '${item.inicioVigencia.day.toString().padLeft(2, '0')}/${item.inicioVigencia.month.toString().padLeft(2, '0')}/${item.inicioVigencia.year}',
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontFamily: 'Source Sans Pro',
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        item.contratado,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontFamily: 'Source Sans Pro',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '${item.terminoVigencia.day.toString().padLeft(2, '0')}/${item.terminoVigencia.month.toString().padLeft(2, '0')}/${item.terminoVigencia.year}',
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontFamily: 'Source Sans Pro',
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+  Widget _createContratoList(item) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.leftToRight,
+            child: ContratoDetalhes(contrato: item),
           ),
-        ),
-        separatorBuilder: (context, index) => Container(
-          padding: const EdgeInsets.only(bottom: 3),
-          child: const SizedBox.shrink(),
+        );
+      },
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  item.numero,
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF525252),
+                    fontFamily: 'Source Sans Pro',
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '${item.inicioVigencia.day.toString().padLeft(2, '0')}/${item.inicioVigencia.month.toString().padLeft(2, '0')}/${item.inicioVigencia.year}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  item.contratado,
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '${item.terminoVigencia.day.toString().padLeft(2, '0')}/${item.terminoVigencia.month.toString().padLeft(2, '0')}/${item.terminoVigencia.year}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontFamily: 'Source Sans Pro',
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  @override
+  Widget criarLista() {
+    CollectionReference collection =
+        FirebaseRepository.instance.contratosCollection;
+    Query query = _buildQuery(collection);
+
+
+    return StreamBuilder(
+      stream: query.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) return const Center();
+
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+
+        final data = snapshot.requireData;
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(9.0),
+              child: mostarResultadosBusca(context, data.docs.length),
+            ),
+            Expanded(
+              child: ListView.separated(
+                itemCount: data.docs.length,
+                separatorBuilder: (BuildContext context, int index) => const SizedBox(
+                  height: 4,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return _createContratoList(data.docs.elementAt(index).data());
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Query _buildQuery(CollectionReference collection) {
+    switch (_classificacaoContratos) {
+      case ClassificacaoContratos.inicioVigencia:
+        return collection.orderBy('inicio',
+            descending: _ordemClassificacao == OrdemClassificacao.decrescente);
+      case ClassificacaoContratos.terminoVigencia:
+        return collection.orderBy('termino',
+            descending: _ordemClassificacao == OrdemClassificacao.decrescente);
+      case ClassificacaoContratos.cnpjcpf:
+        return collection.orderBy('contratado',
+            descending: _ordemClassificacao == OrdemClassificacao.decrescente);
+      default:
+        return collection.orderBy(FieldPath.documentId,
+            descending: _ordemClassificacao == OrdemClassificacao.decrescente);
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         CampoBusca(),
-        Padding(
-          padding: const EdgeInsets.all(9.0),
-          child: mostarResultadosBusca(context),
-        ),
         Expanded(
           child: criarLista(),
         ),

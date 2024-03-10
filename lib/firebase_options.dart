@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '452014915095',
     projectId: 'projeto-programacao-movel',
     authDomain: 'projeto-programacao-movel.firebaseapp.com',
+    databaseURL: 'https://projeto-programacao-movel-default-rtdb.firebaseio.com',
     storageBucket: 'projeto-programacao-movel.appspot.com',
     measurementId: 'G-ELHWR04KCQ',
   );
@@ -64,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:452014915095:android:e2c4f30933818b5c7ee652',
     messagingSenderId: '452014915095',
     projectId: 'projeto-programacao-movel',
+    databaseURL: 'https://projeto-programacao-movel-default-rtdb.firebaseio.com',
     storageBucket: 'projeto-programacao-movel.appspot.com',
   );
 }

@@ -1,7 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomRadio<T> extends StatelessWidget {
-  const CustomRadio({
+class Selection<T> extends StatelessWidget {
+  Selection({
     super.key,
     required this.value,
     required this.groupValue,
@@ -11,13 +12,13 @@ class CustomRadio<T> extends StatelessWidget {
 
   final T value;
 
-  final List<T> groupValue;
+  final T groupValue;
 
   final ValueChanged<T> onChanged;
 
   final String? title;
 
-  bool get checked => groupValue.contains(value);
+  bool get checked => groupValue == value;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +42,9 @@ class CustomRadio<T> extends StatelessWidget {
   }
 }
 
-class RadioItem<T> {
-  const RadioItem({
+
+class SelectItem<T> {
+  const SelectItem({
     required this.value,
     this.title,
   });
@@ -51,43 +53,38 @@ class RadioItem<T> {
   final String? title;
 }
 
-class CustomRadioList<T> extends StatefulWidget {
-  CustomRadioList({
+class Select<T> extends StatefulWidget {
+  Select({
     super.key,
     required this.itens,
     required this.onChange,
     required this.groupValue,
   });
 
-  final List<RadioItem<T>> itens;
+  final List<SelectItem<T>> itens;
 
   final Function onChange;
 
-  List<T> groupValue;
+  T groupValue;
 
   @override
-  State<CustomRadioList<T>> createState() => _CustomRadioListState<T>();
+  State<Select<T>> createState() => _CustomRadioListState<T>();
 }
 
-class _CustomRadioListState<T> extends State<CustomRadioList<T>> {
+class _CustomRadioListState<T> extends State<Select<T>> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: widget.itens.map(
-        (e) {
-          return CustomRadio<T>(
+            (e) {
+          return Selection<T>(
             title: e.title,
             value: e.value,
             groupValue: widget.groupValue,
             onChanged: (T value) {
               setState(() {
-                if (!widget.groupValue.contains(value)) {
-                  widget.groupValue.add(value);
-                } else {
-                  widget.groupValue.remove(value);
-                }
-
-                widget.onChange(widget.groupValue);
+                widget.onChange(value);
+                widget.groupValue = value;
               });
             },
           );

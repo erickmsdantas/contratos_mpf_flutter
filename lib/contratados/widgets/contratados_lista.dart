@@ -1,7 +1,7 @@
 import 'package:contratos_mpf/contratados/models/contratado.dart';
 import 'package:contratos_mpf/contratados/screens/contratados_detalhes.dart';
 import 'package:contratos_mpf/utils/ordem.dart';
-import 'package:contratos_mpf/widgets/custom_radio_list.dart';
+import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:page_transition/page_transition.dart';
@@ -52,7 +52,7 @@ class _ContratadosListaState extends State<ContratadosLista> {
       ),
       child: Column(
         children: [
-          CustomRadioList(
+          MultipleSelection(
             groupValue: [_classificacaoContrato],
             itens: const [
               RadioItem(
@@ -75,7 +75,7 @@ class _ContratadosListaState extends State<ContratadosLista> {
             },
           ),
           const Divider(),
-          CustomRadioList(
+          MultipleSelection(
             groupValue: [_ordemClassificacao],
             itens: const [
               RadioItem(

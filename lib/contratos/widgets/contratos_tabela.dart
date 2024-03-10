@@ -75,11 +75,11 @@ class _ContratosModoTabelaState extends State<ContratosModoTabela> {
             DataCell(Text(
                 '${e.terminoVigencia.day.toString().padLeft(2, '0')}/${e.terminoVigencia.month.toString().padLeft(2, '0')}/${e.terminoVigencia.year}')),
             DataCell(Text(e.situacao)),
-            DataCell(Text(e.itemFornecido)),
+            //DataCell(Text(e.itemFornecido)),
             DataCell(Text(e.unidade)),
-            DataCell(Text(e.valorUnitario)),
-            DataCell(Text(e.quantidade)),
-            DataCell(Text(e.valorTotalDoItem)),
+            //DataCell(Text(e.valorUnitario)),
+            //DataCell(Text(e.quantidade)),
+            //DataCell(Text(e.valorTotalDoItem)),
             DataCell(Text(e.valorTotalDoContrato)),
             DataCell(TextButton(
               child: const Text("Ver Detalhes"),

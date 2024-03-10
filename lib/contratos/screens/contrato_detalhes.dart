@@ -51,10 +51,10 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
     );
   }
 
-  _itemFornecido()
+  /*_itemFornecido()
   {
     return _itemDetalheBasico("Item Fornecido", widget.contrato.itemFornecido);
-  }
+  }*/
 
   _nrEdital() {
     return _itemDetalheBasico("Nº do Edital", widget.contrato.nrEdital,);
@@ -169,7 +169,7 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
             ),
             //
             _ug(),
-            _itemFornecido(),
+            // _itemFornecido(),
             _nrEdital(),
             _unidadeMedida(),
             _valorUnitario(),

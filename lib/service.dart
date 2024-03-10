@@ -19,12 +19,12 @@ class ApiService {
     contratos[0].nrEdital = '1/2023 - PR-AP';
     contratos[0].inicioVigencia = DateTime(2023, 6, 21);
     contratos[0].terminoVigencia = DateTime(2024, 7, 11);
-    contratos[0].itemFornecido = 'Copos descartáveis, com capacidade de 180ml cada.';
+    //contratos[0].itemFornecido = 'Copos descartáveis, com capacidade de 180ml cada.';
     contratos[0].unidade = 'CAIXA';
-    contratos[0].valorUnitario = 'R\$93,80';
-    contratos[0].valorTotalDoItem = 'R\$938,00';
+    //contratos[0].valorUnitario = 'R\$93,80';
+    //contratos[0].valorTotalDoItem = 'R\$938,00';
     contratos[0].valorTotalDoContrato = 'R\$21.882,00';
-    contratos[0].quantidade = '10';
+    //contratos[0].quantidade = '10';
 
 
     contratos[1].numero = '2/2023';
@@ -35,12 +35,12 @@ class ApiService {
     contratos[0].nrEdital = '1/2023 - PR-AP';
     contratos[0].inicioVigencia = DateTime(2022, 1, 5);
     contratos[0].terminoVigencia = DateTime(2024, 7, 11);
-    contratos[0].itemFornecido = 'Açúcar refinado branco tradicional de primeira qualidade, em pacotes com 1kg..';
+    //contratos[0].itemFornecido = 'Açúcar refinado branco tradicional de primeira qualidade, em pacotes com 1kg..';
     contratos[0].unidade = 'QUILOGRAMA';
-    contratos[0].valorUnitario = 'R\$93,80';
-    contratos[0].valorTotalDoItem = 'R\$938,00';
+    //contratos[0].valorUnitario = 'R\$93,80';
+    //contratos[0].valorTotalDoItem = 'R\$938,00';
     contratos[0].valorTotalDoContrato = 'R\$21.882,00';
-    contratos[0].quantidade = '10';
+    //contratos[0].quantidade = '10';
 
     return contratos;
   }

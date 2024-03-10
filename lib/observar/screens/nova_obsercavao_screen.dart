@@ -2,7 +2,7 @@ import 'package:contratos_mpf/nav_menu.dart';
 import 'package:contratos_mpf/observar/models/observacao.dart';
 import 'package:contratos_mpf/service.dart';
 import 'package:contratos_mpf/widgets/combo_box.dart';
-import 'package:contratos_mpf/widgets/custom_radio_list.dart';
+import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:contratos_mpf/widgets/filtro_item.dart';
 import 'package:contratos_mpf/widgets/filtro_item_intervalo.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class _NovaObservacaoScreenScreenState extends State<NovaObservacaoScreen> {
       ),
       child: Column(
         children: [
-          CustomRadioList<String>(
+          MultipleSelection<String>(
             groupValue: _unidadesGestorasSelecionadas,
             itens: unidadesGestoras.entries
                 .map(
