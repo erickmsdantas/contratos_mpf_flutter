@@ -4,9 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FiltroItemIntervalo extends StatelessWidget {
-  FiltroItemIntervalo({super.key, required this.titulo});
+  FiltroItemIntervalo({super.key, required this.titulo, required this.onChangedMin, required this.onChangedMax});
 
   String titulo;
+
+  final Function onChangedMin;
+  final Function onChangedMax;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,9 @@ class FiltroItemIntervalo extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 5),
               child: CurrencyInput(
-                labelText: "Mínimo",
+                labelText: "Mínimo", onChanged: (value) {
+                onChangedMin(value);
+              }
               ),
             ),
           ),
@@ -26,7 +31,9 @@ class FiltroItemIntervalo extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 5),
               child: CurrencyInput(
-                labelText: "Máximo",
+                labelText: "Máximo", onChanged: (value) {
+                onChangedMax(value);
+              },
               ),
             ),
           ),

@@ -15,6 +15,8 @@ class ContratosModoTabela extends StatefulWidget {
 class _ContratosModoTabelaState extends State<ContratosModoTabela> {
   late List<Contrato> _contratos = [];
 
+  TextEditingController controller = TextEditingController();
+
   @override
   void initState() {
     ApiService().getContratos().then((value) {
@@ -103,7 +105,9 @@ class _ContratosModoTabelaState extends State<ContratosModoTabela> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CampoBusca(),
+        CampoBusca(onChanged: (text) {
+          print('text');
+        }),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(

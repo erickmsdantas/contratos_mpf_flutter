@@ -8,6 +8,10 @@ import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:async/async.dart' show StreamGroup;
+
+import '../../utils/filtro_contratos.dart';
+
 
 const double _pageBreakpoint = 768.0;
 
@@ -19,17 +23,22 @@ enum ClassificacaoContratos {
 }
 
 class ContratosModoLista extends StatefulWidget {
-  ContratosModoLista({super.key});
+  ContratosModoLista({super.key, required this.filtroContratos});
+
+  FiltroContratos filtroContratos;
 
   @override
   State<ContratosModoLista> createState() => _ContratosModoListaState();
 }
 
 class _ContratosModoListaState extends State<ContratosModoLista> {
+  String textoBusca = '';
+
   ClassificacaoContratos _classificacaoContratos =
       ClassificacaoContratos.cnpjcpf;
 
   OrdemClassificacao _ordemClassificacao = OrdemClassificacao.crescente;
+
 
   @override
   void initState() {
@@ -222,13 +231,27 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
   }
 
   Widget criarLista() {
+    List<Stream<QuerySnapshot>> streams = [];
+
     CollectionReference collection =
         FirebaseRepository.instance.contratosCollection;
-    Query query = _buildQuery(collection);
 
+    Query query1 = _buildQuery(collection);
+    Query query2 = collection.limit(5);//_buildQuery(collection);
+
+    if (textoBusca.isNotEmpty) {
+      query1 = query1.where('nr_contrato', isGreaterThanOrEqualTo: textoBusca)
+        .where('nr_contrato', isLessThanOrEqualTo:  textoBusca + '\uf8ff');
+
+      query2 = query2.where('contratado', isGreaterThanOrEqualTo: textoBusca)
+          .where('contratado', isLessThanOrEqualTo:  textoBusca + '\uf8ff');
+    }
+
+    streams.add(query1.snapshots());
+    // /streams.add(query2.snapshots());
 
     return StreamBuilder(
-      stream: query.snapshots(),
+      stream: StreamGroup.merge(streams),//query.snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) return const Center();
 
@@ -281,7 +304,11 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CampoBusca(),
+        CampoBusca(onChanged: (text) {
+          setState(() {
+            textoBusca = text;
+          });
+        },),
         Expanded(
           child: criarLista(),
         ),

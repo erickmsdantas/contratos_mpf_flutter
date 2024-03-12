@@ -1,6 +1,7 @@
 import 'package:contratos_mpf/nav_menu.dart';
 import 'package:contratos_mpf/observar/models/observacao.dart';
 import 'package:contratos_mpf/service.dart';
+import 'package:contratos_mpf/utils/filtro_contratos.dart';
 import 'package:contratos_mpf/widgets/combo_box.dart';
 import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:contratos_mpf/widgets/filtro_item.dart';
@@ -18,6 +19,8 @@ class NovaObservacaoScreen extends StatefulWidget {
 
 class _NovaObservacaoScreenScreenState extends State<NovaObservacaoScreen> {
   final unidadesGestoras = ApiService().getUnidadesGestoras();
+
+  FiltroContratos filtroContratos = FiltroContratos();
 
   List<String> _unidadesGestorasSelecionadas = [];
 
@@ -114,18 +117,42 @@ class _NovaObservacaoScreenScreenState extends State<NovaObservacaoScreen> {
   _valorUnitario() {
     return FiltroItemIntervalo(
       titulo: "Valor Unitário",
+      onChangedMin: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: filtroContratos.valorTotalContrato.max, min: value);
+      },
+      onChangedMax: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: value, min: filtroContratos.valorTotalContrato.min);
+      },
     );
   }
 
   _valorTotalItem() {
     return FiltroItemIntervalo(
       titulo: "Valor Total do Item",
+      onChangedMin: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: filtroContratos.valorTotalContrato.max, min: value);
+      },
+      onChangedMax: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: value, min: filtroContratos.valorTotalContrato.min);
+      },
     );
   }
 
   _valorTotalContrato() {
     return FiltroItemIntervalo(
       titulo: "Valor Total do Contrato",
+      onChangedMin: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: filtroContratos.valorTotalContrato.max, min: value);
+      },
+      onChangedMax: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: value, min: filtroContratos.valorTotalContrato.min);
+      },
     );
   }
 

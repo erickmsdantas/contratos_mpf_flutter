@@ -41,13 +41,19 @@ class CurrencyInputFormatter extends TextInputFormatter {
 }
 
 class CurrencyInput extends StatelessWidget {
-  CurrencyInput({super.key, required this.labelText});
+  CurrencyInput({super.key, required this.labelText, required this.onChanged});
 
   String labelText;
+
+  final Function onChanged;
+
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: (text) {
+        onChanged(text);
+      },
       decoration: InputDecoration(
         label: Row(children: [
           const Text("R\$ "),

@@ -1,4 +1,5 @@
 import 'package:contratos_mpf/service.dart';
+import 'package:contratos_mpf/utils/filtro_contratos.dart';
 import 'package:contratos_mpf/widgets/combo_box.dart';
 import 'package:contratos_mpf/widgets/select.dart';
 import 'package:contratos_mpf/widgets/multiple_select.dart';
@@ -13,7 +14,9 @@ import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 enum ModoExibicao { lista, tabela }
 
 class ContratosFiltroScreen extends StatefulWidget {
-  const ContratosFiltroScreen({super.key});
+  const ContratosFiltroScreen({super.key, required this.filtroContratos});
+
+  final FiltroContratos filtroContratos;
 
   @override
   State<ContratosFiltroScreen> createState() => _ContratosFiltroScreenState();
@@ -22,6 +25,8 @@ class ContratosFiltroScreen extends StatefulWidget {
 class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
   final unidadesGestoras = ApiService().getUnidadesGestoras();
   List<String> _unidadesGestorasSelecionadas = [];
+
+  FiltroContratos filtroContratos = FiltroContratos();
 
   @override
   void initState() {
@@ -58,7 +63,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
       child: Column(
         children: [
           MultipleSelection<String>(
-            groupValue: _unidadesGestorasSelecionadas,
+            groupValue: filtroContratos.unidadesGestoras,
             itens: unidadesGestoras.entries
                 .map(
                   (entry) => RadioItem(value: entry.key, title: entry.value),
@@ -67,7 +72,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
             onChange: (List<String> value) {
               setState(() {
                 setState(() {
-                  _unidadesGestorasSelecionadas = value;
+                  filtroContratos.unidadesGestoras = value;
                 });
               });
             },
@@ -81,7 +86,9 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
     return FiltroItem(
       titulo: "Unidade Gestora",
       child: ComboBox(
-        selecionados: _unidadesGestorasSelecionadas.map((e) => unidadesGestoras[e]!.substring(0, 5)).toList(),
+        selecionados: filtroContratos.unidadesGestoras
+            .map((e) => unidadesGestoras[e]!.substring(0, 5))
+            .toList(),
         onClick: () {
           WoltModalSheet.show<void>(
             context: context,
@@ -134,18 +141,42 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
   _valorUnitario() {
     return FiltroItemIntervalo(
       titulo: "Valor Unitário",
+      onChangedMin: (value) {
+        //filtroContratos.valorTotalContrato =
+        //(max: filtroContratos.valorTotalContrato.max, min: value);
+      },
+      onChangedMax: (value) {
+        //filtroContratos.valorTotalContrato =
+        //(max: value, min: filtroContratos.valorTotalContrato.min);
+      },
     );
   }
 
   _valorTotalItem() {
     return FiltroItemIntervalo(
       titulo: "Valor Total do Item",
+      onChangedMin: (value) {
+        //filtroContratos.valorTotalContrato =
+        //(max: filtroContratos.valorTotalContrato.max, min: value);
+      },
+      onChangedMax: (value) {
+        //filtroContratos.valorTotalContrato =
+        //(max: value, min: filtroContratos.valorTotalContrato.min);
+      },
     );
   }
 
   _valorTotalContrato() {
     return FiltroItemIntervalo(
       titulo: "Valor Total do Contrato",
+      onChangedMin: (value) {
+        filtroContratos.valorTotalContrato =
+            (max: filtroContratos.valorTotalContrato.max, min: value);
+      },
+      onChangedMax: (value) {
+        filtroContratos.valorTotalContrato =
+        (max: value, min: filtroContratos.valorTotalContrato.min);
+      },
     );
   }
 
@@ -187,7 +218,9 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
                     child: const Text("Restaurar"),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context, filtroContratos);
+                    },
                     child: const Text("Aplicar"),
                   ),
                 ],

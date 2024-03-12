@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CampoBusca extends StatefulWidget {
-  CampoBusca({required this.controller});
+  CampoBusca({required this.onChanged});
 
-  TextEditingController controller = TextEditingController();
+  final Function onChanged;
+
 
   @override
   State<CampoBusca> createState() => _CampoBuscaState();
@@ -17,16 +18,17 @@ class _CampoBuscaState extends State<CampoBusca> {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: 32.0,
           horizontal: 8.0,
         ),
         child: Center(
           child: TextField(
-            obscureText: true,
-            controller: widget.controller,
+            onChanged: (text) {
+              widget.onChanged(text);
+            },
             //style: TextStyle(color: Color(0xfff1f1f1)),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               //filled: true,
               prefixIcon: Icon(Icons.search),
