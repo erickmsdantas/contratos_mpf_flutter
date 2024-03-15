@@ -25,9 +25,10 @@ class Contrato {
     dataPublicacao =
         DateTimeUtils().parseDate(json['data_publicacao'].toString())!;
     nrEdital = json['nr_edital'];
-    inicioVigencia = DateTimeUtils().parseDate(json['inicio'].toString())!;
-    terminoVigencia = DateTimeUtils().parseDate(json['termino'].toString())!;
+    inicioVigencia = json['inicio'].toDate();
+    terminoVigencia = json['termino'].toDate();
     situacao = json['situacao'];
-    valorTotalDoContrato = json['valor_total'];
+    valorTotalDoContrato = json['valor_total'].toString();
+    contratado = json['contratado'];
   }
 }
