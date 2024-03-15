@@ -9,9 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:async/async.dart' show StreamGroup;
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 
 import '../../utils/filtro_contratos.dart';
-
+import '../models/contrato.dart';
 
 const double _pageBreakpoint = 768.0;
 
@@ -38,7 +39,6 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
       ClassificacaoContratos.cnpjcpf;
 
   OrdemClassificacao _ordemClassificacao = OrdemClassificacao.crescente;
-
 
   @override
   void initState() {
@@ -233,25 +233,74 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
   Widget criarLista() {
     List<Stream<QuerySnapshot>> streams = [];
 
-    CollectionReference collection =
+    CollectionReference<Contrato> collection =
         FirebaseRepository.instance.contratosCollection;
 
-    Query query1 = _buildQuery(collection);
-    Query query2 = collection.limit(5);//_buildQuery(collection);
+    Query<Contrato> query1 = collection.limit(100); //_buildQuery(collection);
+    Query query2 = collection.limit(100); //_buildQuery(collection);
+
+    if (widget.filtroContratos.unidadesGestoras.length > 0) {
+      query1 =
+          query1.where('ug', whereIn: widget.filtroContratos.unidadesGestoras);
+    }
+
+    if (widget.filtroContratos.situacao.ativo !=
+        widget.filtroContratos.situacao.concluido) {
+      if (widget.filtroContratos.situacao.ativo) {
+        query1 = query1.where('situacao', isEqualTo: 'ativo');
+      } else {
+        query1 = query1.where('situacao', isEqualTo: 'concluído');
+      }
+    }
+
+    //
+    //
+    //
+
+    if (widget.filtroContratos.valorTotalContrato.min > 0) {
+      query1 = query1.where('valor_total',
+          isGreaterThanOrEqualTo:
+              widget.filtroContratos.valorTotalContrato.min);
+    }
+
+    if (widget.filtroContratos.valorTotalContrato.max > 0) {
+      query1 = query1.where('valor_total',
+          isLessThanOrEqualTo: widget.filtroContratos.valorTotalContrato.max);
+    }
+
+    //
+    //
+    //
 
     if (textoBusca.isNotEmpty) {
-      query1 = query1.where('nr_contrato', isGreaterThanOrEqualTo: textoBusca)
-        .where('nr_contrato', isLessThanOrEqualTo:  textoBusca + '\uf8ff');
+      query1 = query1
+          .where('nr_contrato', isGreaterThanOrEqualTo: textoBusca)
+          .where('nr_contrato', isLessThanOrEqualTo: textoBusca + '\uf8ff');
 
-      query2 = query2.where('contratado', isGreaterThanOrEqualTo: textoBusca)
-          .where('contratado', isLessThanOrEqualTo:  textoBusca + '\uf8ff');
+      query2 = query2
+          .where('contratado', isGreaterThanOrEqualTo: textoBusca)
+          .where('contratado', isLessThanOrEqualTo: textoBusca + '\uf8ff');
     }
+
+    query1 = orderBy(query1);
 
     streams.add(query1.snapshots());
     // /streams.add(query2.snapshots());
 
+    /*return FirestoreListView<Contrato>(
+      query: query1,
+      pageSize: 6,
+      emptyBuilder: (context) => const Text('No data'),
+      errorBuilder: (context, error, stackTrace) => Text(error.toString()),
+      loadingBuilder: (context) => const CircularProgressIndicator(),
+      itemBuilder: (context, doc) {
+        final contrato = doc.data();
+        return _createContratoList(contrato);
+      },
+    );
+
     return StreamBuilder(
-      stream: StreamGroup.merge(streams),//query.snapshots(),
+      stream: StreamGroup.merge(streams), //query.snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) return const Center();
 
@@ -269,7 +318,8 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
             Expanded(
               child: ListView.separated(
                 itemCount: data.docs.length,
-                separatorBuilder: (BuildContext context, int index) => const SizedBox(
+                separatorBuilder: (BuildContext context, int index) =>
+                    const SizedBox(
                   height: 4,
                 ),
                 itemBuilder: (BuildContext context, int index) {
@@ -279,36 +329,89 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
             ),
           ],
         );
+      },*/
+
+    return FirestoreQueryBuilder<Contrato>(
+      query: query1,
+      pageSize: 5,
+      builder: (context, snapshot, _) {
+        if (snapshot.isFetching) {
+          return const CircularProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          return Text('error ${snapshot.error}');
+        }
+
+        final data = snapshot.docs;
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(9.0),
+              child: FutureBuilder<AggregateQuerySnapshot>(
+                  future: query1
+                      .count()
+                      .get(), // a previously-obtained Future<String> or null
+                  builder: (BuildContext context,
+                      AsyncSnapshot<AggregateQuerySnapshot> snapshot) {
+                    if (snapshot.hasData) {
+                      return mostarResultadosBusca(
+                          context, snapshot.data!.count);
+                    } else
+                      return Text("");
+                  }),
+            ),
+            Expanded(
+              child: ListView.separated(
+                itemCount: data.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    const SizedBox(
+                  height: 4,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  if (snapshot.hasMore && index + 1 == data.length) {
+                    // Tell FirestoreQueryBuilder to try to obtain more items.
+                    // It is safe to call this function from within the build method.
+                    snapshot.fetchMore();
+                  }
+
+                  return _createContratoList(data.elementAt(index).data());
+                },
+              ),
+            ),
+          ],
+        );
       },
     );
   }
 
-  Query _buildQuery(CollectionReference collection) {
+  Query<Contrato> orderBy(Query<Contrato> query) {
     switch (_classificacaoContratos) {
       case ClassificacaoContratos.inicioVigencia:
-        return collection.orderBy('inicio',
+        return query.orderBy('inicio',
             descending: _ordemClassificacao == OrdemClassificacao.decrescente);
       case ClassificacaoContratos.terminoVigencia:
-        return collection.orderBy('termino',
+        return query.orderBy('termino',
             descending: _ordemClassificacao == OrdemClassificacao.decrescente);
       case ClassificacaoContratos.cnpjcpf:
-        return collection.orderBy('contratado',
+        return query.orderBy('contratado',
             descending: _ordemClassificacao == OrdemClassificacao.decrescente);
       default:
-        return collection.orderBy(FieldPath.documentId,
+        return query.orderBy('nr_contrato',
             descending: _ordemClassificacao == OrdemClassificacao.decrescente);
     }
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CampoBusca(onChanged: (text) {
-          setState(() {
-            textoBusca = text;
-          });
-        },),
+        CampoBusca(
+          onChanged: (text) {
+            setState(() {
+              textoBusca = text;
+            });
+          },
+        ),
         Expanded(
           child: criarLista(),
         ),

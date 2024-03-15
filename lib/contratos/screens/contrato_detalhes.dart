@@ -57,27 +57,45 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
   }*/
 
   _nrEdital() {
-    return _itemDetalheBasico("Nº do Edital", widget.contrato.nrEdital,);
+    return _itemDetalheBasico(
+      "Nº do Edital",
+      widget.contrato.nrEdital,
+    );
   }
 
   _unidadeMedida() {
-    return _itemDetalheBasico("Unidade de Medida", widget.contrato.unidade,);
+    return _itemDetalheBasico(
+      "Unidade de Medida",
+      widget.contrato.unidade,
+    );
   }
 
   _valorUnitario() {
-    return _itemDetalheBasico("Valor Unitário", widget.contrato.valorTotalDoContrato,);
+    return _itemDetalheBasico(
+      "Valor Unitário",
+      widget.contrato.valorTotalDoContrato,
+    );
   }
 
   _quantidade() {
-    return _itemDetalheBasico("Quantidade", widget.contrato.valorTotalDoContrato,);
+    return _itemDetalheBasico(
+      "Quantidade",
+      widget.contrato.valorTotalDoContrato,
+    );
   }
 
   _valorTotalItem() {
-    return _itemDetalheBasico("Valor Total do Item", widget.contrato.valorTotalDoContrato,);
+    return _itemDetalheBasico(
+      "Valor Total do Item",
+      widget.contrato.valorTotalDoContrato,
+    );
   }
 
   _valorTotalContrato() {
-    return _itemDetalheBasico("Valor Total do Contrato", widget.contrato.valorTotalDoContrato,);
+    return _itemDetalheBasico(
+      "Valor Total do Contrato",
+      widget.contrato.valorTotalDoContrato,
+    );
   }
 
   @override
@@ -118,8 +136,21 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
             Padding(
               padding: EdgeInsets.all(10),
               child: Text(
-                '${widget.contrato.inicioVigencia.day.toString().padLeft(2, '0')}/${widget.contrato.inicioVigencia.month.toString().padLeft(2, '0')}/${widget.contrato.inicioVigencia.year}' + ' - ' +
-                '${widget.contrato.terminoVigencia.day.toString().padLeft(2, '0')}/${widget.contrato.terminoVigencia.month.toString().padLeft(2, '0')}/${widget.contrato.terminoVigencia.year}',
+                '${widget.contrato.inicioVigencia.day.toString().padLeft(2, '0')}/${widget.contrato.inicioVigencia.month.toString().padLeft(2, '0')}/${widget.contrato.inicioVigencia.year}' +
+                    ' - ' +
+                    '${widget.contrato.terminoVigencia.day.toString().padLeft(2, '0')}/${widget.contrato.terminoVigencia.month.toString().padLeft(2, '0')}/${widget.contrato.terminoVigencia.year}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF525252),
+                  fontFamily: 'Source Sans Pro',
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                '${widget.contrato.situacao}',
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

@@ -2,6 +2,7 @@ import 'package:contratos_mpf/service.dart';
 import 'package:contratos_mpf/utils/filtro_contratos.dart';
 import 'package:contratos_mpf/widgets/combo_box.dart';
 import 'package:contratos_mpf/widgets/select.dart';
+import 'package:contratos_mpf/widgets/radio_button.dart';
 import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:contratos_mpf/widgets/filtro_item.dart';
 import 'package:contratos_mpf/widgets/filtro_item_intervalo.dart';
@@ -30,6 +31,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
 
   @override
   void initState() {
+    filtroContratos = widget.filtroContratos;
     super.initState();
   }
 
@@ -117,16 +119,22 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          /*CustomRadioButton(
+          RadioButton(
             texto: "Ativo",
-            valor: 1,
-            grupo: 0,
+            selecionado: filtroContratos.situacao.ativo,
+            onChanged: (value) {
+              filtroContratos.situacao =
+                  (ativo: value, concluido: filtroContratos.situacao.concluido);
+            },
           ),
-          CustomRadioButton(
+          RadioButton(
             texto: "Concluido",
-            valor: 2,
-            grupo: 0,
-          ),*/
+            selecionado: filtroContratos.situacao.concluido,
+            onChanged: (value) {
+              filtroContratos.situacao =
+                  (ativo: filtroContratos.situacao.ativo, concluido: value);
+            },
+          ),
         ],
       ),
     );
@@ -138,7 +146,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
     );
   }
 
-  _valorUnitario() {
+  /*_valorUnitario() {
     return FiltroItemIntervalo(
       titulo: "Valor Unitário",
       onChangedMin: (value) {
@@ -164,18 +172,20 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
         //(max: value, min: filtroContratos.valorTotalContrato.min);
       },
     );
-  }
+  }*/
 
   _valorTotalContrato() {
     return FiltroItemIntervalo(
       titulo: "Valor Total do Contrato",
+      initialMin: filtroContratos.valorTotalContrato.min,
+      initialMax: filtroContratos.valorTotalContrato.max,
       onChangedMin: (value) {
         filtroContratos.valorTotalContrato =
             (max: filtroContratos.valorTotalContrato.max, min: value);
       },
       onChangedMax: (value) {
         filtroContratos.valorTotalContrato =
-        (max: value, min: filtroContratos.valorTotalContrato.min);
+            (max: value, min: filtroContratos.valorTotalContrato.min);
       },
     );
   }
@@ -214,7 +224,9 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context, FiltroContratos());
+                    },
                     child: const Text("Restaurar"),
                   ),
                   TextButton(
@@ -229,8 +241,8 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
             _unidadeGestora(context),
             _situacao(),
             _vigenteEntre(),
-            _valorUnitario(),
-            _valorTotalItem(),
+            /*_valorUnitario(),
+            _valorTotalItem(),*/
             _valorTotalContrato(),
             _unidadeMedida(),
           ],

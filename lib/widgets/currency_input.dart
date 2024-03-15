@@ -27,7 +27,8 @@ class CurrencyInputFormatter extends TextInputFormatter {
     }
 
     if (parteCent != null) {
-      parteCent = ',${parteCent.substring(0, parteCent.length > 2 ? 2 : parteCent.length)}';
+      parteCent =
+          ',${parteCent.substring(0, parteCent.length > 2 ? 2 : parteCent.length)}';
       newText = newText + parteCent;
     }
 
@@ -36,29 +37,38 @@ class CurrencyInputFormatter extends TextInputFormatter {
 
     return newValue.copyWith(
         text: newText,
-        selection: TextSelection.collapsed(offset: newText.length - selectionIndexFromTheRight));
+        selection: TextSelection.collapsed(
+            offset: newText.length - selectionIndexFromTheRight));
   }
 }
 
 class CurrencyInput extends StatelessWidget {
-  CurrencyInput({super.key, required this.labelText, required this.onChanged});
+  CurrencyInput(
+      {super.key,
+      required this.labelText,
+      required this.onChanged,
+      String this.initialValue = ''});
 
   String labelText;
 
-  final Function onChanged;
+  String initialValue;
 
+  final Function onChanged;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: TextEditingController(text: initialValue),
       onChanged: (text) {
         onChanged(text);
       },
       decoration: InputDecoration(
-        label: Row(children: [
-          const Text("R\$ "),
-          Text(labelText),
-        ],),
+        label: Row(
+          children: [
+            const Text("R\$ "),
+            Text(labelText),
+          ],
+        ),
         border: const OutlineInputBorder(),
       ),
       keyboardType: TextInputType.number,
@@ -67,5 +77,4 @@ class CurrencyInput extends StatelessWidget {
       ],
     );
   }
-
 }
