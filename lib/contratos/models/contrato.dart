@@ -31,5 +31,7 @@ class Contrato {
     situacao = json['situacao'];
     valorTotalDoContrato = json['valor_total'].toString();
     contratado = json['contratado'];
+    itens =
+        List<Item>.from(json['itens']?.map((item) => Item.fromMap(item)) ?? []);
   }
 }

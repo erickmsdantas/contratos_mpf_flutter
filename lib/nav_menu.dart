@@ -1,8 +1,9 @@
 import 'package:contratos_mpf/contratados/screens/contratados_screen.dart';
 import 'package:contratos_mpf/contratos/screens/contratos_screen.dart';
 import 'package:contratos_mpf/notificacoes/screens/notificacoes_screen.dart';
-import 'package:contratos_mpf/observar/screens/observar_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'favoritos/screens/favoritos_screen.dart';
 
 class NavMenu extends StatelessWidget {
   @override
@@ -38,11 +39,11 @@ class NavMenu extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.input),
-            title: const Text('Observar'),
+            title: const Text('Favoritos'),
             onTap: () => {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ObservarScreen()),
+                MaterialPageRoute(builder: (context) => FavoritosScreen()),
               )
             },
           ),
