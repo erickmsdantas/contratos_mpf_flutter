@@ -19,8 +19,9 @@ class Contrato {
   Contrato();
 
   Contrato.fromJson(String id, Map<String, dynamic> json) {
+    print(json);
     numero = id.toString().replaceAll('.', '/');
-    //unidade = json['unidade'];
+    unidade = json['ug'];
     objeto = json['objeto'];
     dataPublicacao =
         DateTimeUtils().parseDate(json['data_publicacao'].toString())!;

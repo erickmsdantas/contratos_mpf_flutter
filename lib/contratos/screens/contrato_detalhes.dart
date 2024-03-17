@@ -11,7 +11,7 @@ class ContratoDetalhes extends StatefulWidget {
 }
 
 class _ContratoDetalhesState extends State<ContratoDetalhes> {
-  _itemDetalheBasico(String titulo, String descricao,
+  _itemDetalhe(String titulo, Widget widget,
       {double titleSize = 16, FontWeight fontWeight = FontWeight.normal}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,17 +30,25 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
         ),
         Padding(
           padding: EdgeInsets.all(10),
-          child: Text(
-            descricao,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: fontWeight,
-              color: const Color(0xFF525252),
-              fontFamily: 'Source Sans Pro',
-            ),
-          ),
+          child: widget,
         ),
       ],
+    );
+  }
+
+  _itemDetalheBasico(String titulo, String descricao,
+      {double titleSize = 16, FontWeight fontWeight = FontWeight.normal}) {
+    return _itemDetalhe(
+      titulo,
+      Text(
+        descricao,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: fontWeight,
+          color: const Color(0xFF525252),
+          fontFamily: 'Source Sans Pro',
+        ),
+      ),
     );
   }
 
@@ -95,6 +103,27 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
     return _itemDetalheBasico(
       "Valor Total do Contrato",
       widget.contrato.valorTotalDoContrato,
+    );
+  }
+
+  _itens() {
+    return _itemDetalhe(
+      'Itens do Contrato',
+      ListView.builder(
+        padding: const EdgeInsets.all(8),
+        shrinkWrap: true,
+        itemCount: widget.contrato.itens.length,
+        itemBuilder: (BuildContext context, int index) {
+          var item = widget.contrato.itens[index];
+          return Card(
+            child: Container(
+              height: 50,
+              //color: Colors.amber[colorCodes[index]],
+              child: Center(child: Text('Entry ${item.itemFornecido}')),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -200,13 +229,9 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
             ),
             //
             _ug(),
-            // _itemFornecido(),
             _nrEdital(),
-            _unidadeMedida(),
-            _valorUnitario(),
-            _quantidade(),
-            _valorTotalItem(),
             _valorTotalContrato(),
+            _itens(),
           ],
         ),
       ),

@@ -143,36 +143,15 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
   _vigenteEntre() {
     return FiltroItemPeriodo(
       titulo: "Vigente entre",
+      onChangedInicio: (ano, mes, dia) {
+        filtroContratos.vigenteInicio = (ano: ano, mes: mes, dia: dia);
+      },
+      onChangedFim: (ano, mes, dia) {
+        filtroContratos.vigenteFim = (ano: ano, mes: mes, dia: dia);
+      },
+
     );
   }
-
-  /*_valorUnitario() {
-    return FiltroItemIntervalo(
-      titulo: "Valor Unitário",
-      onChangedMin: (value) {
-        //filtroContratos.valorTotalContrato =
-        //(max: filtroContratos.valorTotalContrato.max, min: value);
-      },
-      onChangedMax: (value) {
-        //filtroContratos.valorTotalContrato =
-        //(max: value, min: filtroContratos.valorTotalContrato.min);
-      },
-    );
-  }
-
-  _valorTotalItem() {
-    return FiltroItemIntervalo(
-      titulo: "Valor Total do Item",
-      onChangedMin: (value) {
-        //filtroContratos.valorTotalContrato =
-        //(max: filtroContratos.valorTotalContrato.max, min: value);
-      },
-      onChangedMax: (value) {
-        //filtroContratos.valorTotalContrato =
-        //(max: value, min: filtroContratos.valorTotalContrato.min);
-      },
-    );
-  }*/
 
   _valorTotalContrato() {
     return FiltroItemIntervalo(
@@ -193,11 +172,14 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
   _unidadeMedida() {
     return FiltroItem(
       titulo: "Unidade de Medida",
-      child: const TextField(
-        decoration: InputDecoration(
+      child:  TextField(
+        decoration: const InputDecoration(
           labelText: "Unidade de Medida",
           border: OutlineInputBorder(),
         ),
+        onChanged: (String value) {
+          filtroContratos.unidadeMedida = value;
+        },
       ),
     );
   }

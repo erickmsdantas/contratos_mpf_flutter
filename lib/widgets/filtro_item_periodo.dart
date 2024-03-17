@@ -5,9 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FiltroItemPeriodo extends StatelessWidget {
-  FiltroItemPeriodo({super.key, required this.titulo});
+  FiltroItemPeriodo(
+      {super.key,
+      required this.titulo,
+      required this.onChangedInicio,
+      required this.onChangedFim});
 
   String titulo;
+
+  Function onChangedInicio;
+  Function onChangedFim;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,10 @@ class FiltroItemPeriodo extends StatelessWidget {
               padding: const EdgeInsets.only(right: 5),
               child: DateField(
                 labelText: 'Início',
-                onChanged: () {},
+                onChanged: (ano, mes, dia) {
+                  onChangedInicio(ano, mes, dia);
+                  print('inicio');
+                },
               ),
             ),
           ),
@@ -29,7 +39,9 @@ class FiltroItemPeriodo extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5),
               child: DateField(
                 labelText: 'Fim',
-                onChanged: () {},
+                onChanged: (ano, mes, dia) {
+                  onChangedFim(ano, mes, dia);
+                },
               ),
             ),
           ),
