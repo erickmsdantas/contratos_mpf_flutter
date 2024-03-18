@@ -253,6 +253,52 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
       }
     }
 
+    if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty) {
+      DateTime startDate;
+
+      if (widget.filtroContratos.vigenteInicio.mes.isNotEmpty &&
+          widget.filtroContratos.vigenteInicio.dia.isNotEmpty) {
+        startDate = DateTime(
+            int.parse(widget.filtroContratos.vigenteInicio.ano),
+            int.parse(widget.filtroContratos.vigenteInicio.mes),
+            int.parse(widget.filtroContratos.vigenteInicio.dia));
+      } else if (widget.filtroContratos.vigenteInicio.mes.isNotEmpty) {
+        startDate = DateTime(
+            int.parse(widget.filtroContratos.vigenteInicio.ano),
+            int.parse(widget.filtroContratos.vigenteInicio.mes),
+            1);
+      } else {
+        startDate =
+            DateTime(int.parse(widget.filtroContratos.vigenteInicio.ano), 1, 1);
+      }
+
+      query1 = query1.where('inicio',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate)).orderBy('inicio');
+    }
+
+    if (widget.filtroContratos.vigenteFim.ano.isNotEmpty) {
+      DateTime dataFinal;
+
+      if (widget.filtroContratos.vigenteFim.mes.isNotEmpty &&
+          widget.filtroContratos.vigenteFim.dia.isNotEmpty) {
+        dataFinal = DateTime(
+            int.parse(widget.filtroContratos.vigenteFim.ano),
+            int.parse(widget.filtroContratos.vigenteFim.mes),
+            int.parse(widget.filtroContratos.vigenteFim.dia));
+      } else if (widget.filtroContratos.vigenteFim.mes.isNotEmpty) {
+        dataFinal = DateTime(
+            int.parse(widget.filtroContratos.vigenteFim.ano),
+            int.parse(widget.filtroContratos.vigenteFim.mes),
+            1);
+      } else {
+        dataFinal =
+            DateTime(int.parse(widget.filtroContratos.vigenteFim.ano), 1, 1);
+      }
+
+      query1 = query1.where('termino',
+          isLessThanOrEqualTo: Timestamp.fromDate(dataFinal)).orderBy('termino');
+    }
+
     //
     //
     //
@@ -287,50 +333,6 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
     streams.add(query1.snapshots());
     // /streams.add(query2.snapshots());
 
-    /*return FirestoreListView<Contrato>(
-      query: query1,
-      pageSize: 6,
-      emptyBuilder: (context) => const Text('No data'),
-      errorBuilder: (context, error, stackTrace) => Text(error.toString()),
-      loadingBuilder: (context) => const CircularProgressIndicator(),
-      itemBuilder: (context, doc) {
-        final contrato = doc.data();
-        return _createContratoList(contrato);
-      },
-    );
-
-    return StreamBuilder(
-      stream: StreamGroup.merge(streams), //query.snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) return const Center();
-
-        if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
-        }
-
-        final data = snapshot.requireData;
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(9.0),
-              child: mostarResultadosBusca(context, data.docs.length),
-            ),
-            Expanded(
-              child: ListView.separated(
-                itemCount: data.docs.length,
-                separatorBuilder: (BuildContext context, int index) =>
-                    const SizedBox(
-                  height: 4,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return _createContratoList(data.docs.elementAt(index).data());
-                },
-              ),
-            ),
-          ],
-        );
-      },*/
-
     return FirestoreQueryBuilder<Contrato>(
       query: query1,
       pageSize: 5,
@@ -339,6 +341,7 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
           return const CircularProgressIndicator();
         }
         if (snapshot.hasError) {
+          print('error ${snapshot.error}');
           return Text('error ${snapshot.error}');
         }
 

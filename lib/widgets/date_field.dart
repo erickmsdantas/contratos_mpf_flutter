@@ -89,6 +89,12 @@ class DateField extends StatelessWidget {
                           txt.text =
                               '${dia.toString().padLeft(2, '0')}/${txt.text}';
                         }
+
+                        var spl = txt.text.split("/");
+                        onChanged(
+                            spl.isNotEmpty ? spl[0] : '',
+                            spl.length >= 2 ? spl[1] : '',
+                            spl.length >= 3 ? spl[2] : '');
                       },
                     ),
                   ),

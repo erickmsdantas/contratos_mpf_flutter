@@ -19,8 +19,9 @@ class Contrato {
   Contrato();
 
   Contrato.fromJson(String id, Map<String, dynamic> json) {
+    print(json);
     numero = id.toString().replaceAll('.', '/');
-    //unidade = json['unidade'];
+    unidade = json['ug'];
     objeto = json['objeto'];
     dataPublicacao =
         DateTimeUtils().parseDate(json['data_publicacao'].toString())!;
@@ -30,5 +31,7 @@ class Contrato {
     situacao = json['situacao'];
     valorTotalDoContrato = json['valor_total'].toString();
     contratado = json['contratado'];
+    itens =
+        List<Item>.from(json['itens']?.map((item) => Item.fromMap(item)) ?? []);
   }
 }
