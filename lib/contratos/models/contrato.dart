@@ -19,7 +19,6 @@ class Contrato {
   Contrato();
 
   Contrato.fromJson(String id, Map<String, dynamic> json) {
-    print(json);
     numero = id.toString().replaceAll('.', '/');
     unidade = json['ug'];
     objeto = json['objeto'];
