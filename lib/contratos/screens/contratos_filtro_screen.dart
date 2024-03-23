@@ -141,15 +141,18 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
   }
 
   _vigenteEntre() {
+    print('e ${filtroContratos.vigenteInicio}');
     return FiltroItemPeriodo(
       titulo: "Vigente entre",
+      vigenteInicio: filtroContratos.vigenteInicio,
+      vigenteFim: filtroContratos.vigenteFim,
       onChangedInicio: (ano, mes, dia) {
         filtroContratos.vigenteInicio = (ano: ano, mes: mes, dia: dia);
+        print('onchange: ${filtroContratos.vigenteInicio}');
       },
       onChangedFim: (ano, mes, dia) {
         filtroContratos.vigenteFim = (ano: ano, mes: mes, dia: dia);
       },
-
     );
   }
 
@@ -166,21 +169,8 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
         filtroContratos.valorTotalContrato =
             (max: value, min: filtroContratos.valorTotalContrato.min);
       },
-    );
-  }
-
-  _unidadeMedida() {
-    return FiltroItem(
-      titulo: "Unidade de Medida",
-      child:  TextField(
-        decoration: const InputDecoration(
-          labelText: "Unidade de Medida",
-          border: OutlineInputBorder(),
-        ),
-        onChanged: (String value) {
-          filtroContratos.unidadeMedida = value;
-        },
-      ),
+      readOnly: filtroContratos.vigenteInicio.ano.isNotEmpty ||
+          filtroContratos.vigenteFim.ano.isNotEmpty,
     );
   }
 
@@ -213,6 +203,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
                   ),
                   TextButton(
                     onPressed: () {
+                      print("apply: ${filtroContratos.vigenteInicio}");
                       Navigator.pop(context, filtroContratos);
                     },
                     child: const Text("Aplicar"),
@@ -223,10 +214,7 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
             _unidadeGestora(context),
             _situacao(),
             _vigenteEntre(),
-            /*_valorUnitario(),
-            _valorTotalItem(),*/
             _valorTotalContrato(),
-            _unidadeMedida(),
           ],
         ),
       ),

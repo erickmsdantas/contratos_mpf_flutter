@@ -1,8 +1,17 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contratos_mpf/contratados/models/contratado.dart';
 import 'package:contratos_mpf/contratados/widgets/item_detalhe_basico.dart';
 import 'package:contratos_mpf/contratos/models/contrato.dart';
+import 'package:contratos_mpf/contratos/screens/contrato_detalhes.dart';
+import 'package:contratos_mpf/favoritos/models/favoritos.dart';
+import 'package:contratos_mpf/firebase_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:contratos_mpf/service.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ContratadoDetalhes extends StatefulWidget {
   ContratadoDetalhes({super.key, required this.contratado});
@@ -15,19 +24,12 @@ class ContratadoDetalhes extends StatefulWidget {
 
 class _ContratadoDetalhesState extends State<ContratadoDetalhes>
     with TickerProviderStateMixin {
-  List<Contrato> _contratos = [];
-
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    ApiService().getContratosByContratado().then((value) {
-      setState(() {
-        _contratos = value;
-      });
-    });
   }
 
   _titulo() {
@@ -37,27 +39,42 @@ class _ContratadoDetalhesState extends State<ContratadoDetalhes>
     );
   }
 
-  _listarContratos(List<Contrato> contratos) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          ..._contratos
-              .map(
-                (e) => ListTile(
-                  title: Text(e.numero),
-                  subtitle: Text(e.unidade),
-                  trailing: Text('${e.inicioVigencia.day.toString().padLeft(2, '0')}/${e.inicioVigencia.month.toString().padLeft(2, '0')}/${e.inicioVigencia.year}' + ' - ' +
-                      '${e.terminoVigencia.day.toString().padLeft(2, '0')}/${e.terminoVigencia.month.toString().padLeft(2, '0')}/${e.terminoVigencia.year}',),
-                  tileColor: Colors.white,
-                  onTap: () {
-                    //onChanged(value);
-                  },
+  _listarContratos(String situacao) {
+    CollectionReference<Contrato> collection =
+        FirebaseRepository.instance.contratosCollection;
+
+    var ugs = ApiService().getUnidadesGestoras();
+
+    return FirestoreListView<Contrato>(
+      query: collection
+          .where('contratado', isEqualTo: widget.contratado.cpfCnpj)
+          .where('situacao', isEqualTo: situacao), //.orderBy('cpf_cnpj'),
+      itemBuilder: (context, snapshot) {
+        Contrato e = snapshot.data();
+        print('firestore');
+        return ListTile(
+          title: Text(e.numero),
+          subtitle: Text(ugs[e.unidade] ?? ''),
+          trailing: Text(
+            '${e.inicioVigencia.day.toString().padLeft(2, '0')}/${e.inicioVigencia.month.toString().padLeft(2, '0')}/${e.inicioVigencia.year}' +
+                ' - ' +
+                '${e.terminoVigencia.day.toString().padLeft(2, '0')}/${e.terminoVigencia.month.toString().padLeft(2, '0')}/${e.terminoVigencia.year}',
+          ),
+          tileColor: Colors.white,
+          onTap: () {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.leftToRight,
+                child: ContratoDetalhes(
+                  contrato: e,
                 ),
-              )
-              .toList()
-        ],
-      ),
-    );
+              ),
+            );
+          },
+        );
+      },
+    ) /*)*/;
   }
 
   _listaContratos() {
@@ -97,8 +114,8 @@ class _ContratadoDetalhesState extends State<ContratadoDetalhes>
           child: TabBarView(
             controller: _tabController,
             children: <Widget>[
-              _listarContratos(_contratos),
-              _listarContratos(_contratos)
+              _listarContratos('ativo'),
+              _listarContratos('concluído')
             ],
           ),
         ),
@@ -106,22 +123,61 @@ class _ContratadoDetalhesState extends State<ContratadoDetalhes>
     );
   }
 
+  _adicionarOuRemoverFavorito(String userId, Favoritos favoritos) {
+    if (favoritos.hasContratado(widget.contratado.cpfCnpj)) {
+      favoritos.removerContratado(widget.contratado.cpfCnpj);
+    } else {
+      favoritos.addContratado(widget.contratado.cpfCnpj);
+    }
+
+    FirebaseRepository.instance
+        .salvarFavoritos(userId, favoritos)
+        .then((value) {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('DETALHES DO CONTRATADO'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _titulo(),
-            _listaContratos(),
-          ],
-        ),
-      ),
-    );
+    User? user = FirebaseAuth.instance.currentUser;
+
+    return FutureBuilder<Favoritos>(
+        future: FirebaseRepository.instance.getFavoritosForUser(user!.uid),
+        builder: (BuildContext context, AsyncSnapshot<Favoritos> snapshot) {
+          if (snapshot.hasError) {
+            return Text('${snapshot.error!}');
+          }
+
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
+
+          var favoritos = snapshot.data!;
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('DETALHES DO CONTRATADO'),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: Icon(favoritos.hasContratado(widget.contratado.cpfCnpj)
+                      ? Icons.favorite_outlined
+                      : Icons.favorite_outline),
+                  onPressed: () {
+                    _adicionarOuRemoverFavorito(user.uid, favoritos);
+                  },
+                ),
+              ],
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _titulo(),
+                  _listaContratos(),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

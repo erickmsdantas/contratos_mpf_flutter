@@ -13,7 +13,8 @@ class ApiService {
 
     contratos[0].numero = '1/2023';
     contratos[0].unidade = 'PR-SE';
-    contratos[0].objeto = "Procedimento de gestão administrativa autuado a fim de o SELOG proceder às solicitações de baixa da ATA nº 01/2023 - Pregão Eletrônico nº 1/2023 (aquisição de latas de café com leite e copos descartáveis de 180ml para a PR/AP).";
+    contratos[0].objeto =
+        "Procedimento de gestão administrativa autuado a fim de o SELOG proceder às solicitações de baixa da ATA nº 01/2023 - Pregão Eletrônico nº 1/2023 (aquisição de latas de café com leite e copos descartáveis de 180ml para a PR/AP).";
     contratos[0].contratado = '81.243.735/0019-77';
     contratos[0].situacao = 'Ativo';
     contratos[0].nrEdital = '1/2023 - PR-AP';
@@ -26,10 +27,10 @@ class ApiService {
     contratos[0].valorTotalDoContrato = 'R\$21.882,00';
     //contratos[0].quantidade = '10';
 
-
     contratos[1].numero = '2/2023';
     contratos[1].unidade = 'PR-SE';
-    contratos[1].objeto = "Controle das baixa relativas à ATA 02-2023 (açúcar refinado) - Pregão Eletrônico nº 02/2023 (SRP).";
+    contratos[1].objeto =
+        "Controle das baixa relativas à ATA 02-2023 (açúcar refinado) - Pregão Eletrônico nº 02/2023 (SRP).";
     contratos[1].contratado = '13.018.171/0001-90';
     contratos[1].situacao = 'Ativo';
     contratos[0].nrEdital = '1/2023 - PR-AP';
@@ -118,7 +119,8 @@ class ApiService {
       "200102": "PRR4ª REGIÃO - PRR/4ª REGIAO - PORTO ALEGRE",
       "200207": "PRR5ª REGIÃO - PRR/5ª REGIAO - RECIFE",
       "200700": "PRR6ª REGIÃO - PRR/6ª REGIAO - MINAS GERAIS",
-      "200800": "SEPLAN/MPU - SECRETARIA DO PROG. SAÚDE E ASSISTÊNCIA SOCIAL/MPU",
+      "200800":
+          "SEPLAN/MPU - SECRETARIA DO PROG. SAÚDE E ASSISTÊNCIA SOCIAL/MPU",
     };
   }
 

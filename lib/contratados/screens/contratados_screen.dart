@@ -52,9 +52,7 @@ class _ContratadosScreenState extends State<ContratadosScreen> {
         title: const Text("CONTRATADOS"),
         centerTitle: true,
       ),
-      body: Column(
-        children: [CampoBusca(), ContratadosLista(contratados: _contratados)],
-      ),
+      body: ContratadosLista(contratados: _contratados),
     );
   }
 }

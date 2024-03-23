@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:contratos_mpf/widgets/date_picker.dart';
 
 class DateField extends StatelessWidget {
-  DateField({super.key, required this.labelText, required this.onChanged});
+  DateField(
+      {super.key,
+      required this.labelText,
+      required this.onChanged,
+      required this.data});
 
   int anoInicial = 2014;
   int anoFinal = 2024;
+
+  ({String ano, String mes, String dia}) data;
 
   String labelText;
 
@@ -16,6 +22,14 @@ class DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data.ano.isNotEmpty) {
+      print('anov${data}');
+      _updateTexto(
+          int.parse(data.ano) - anoInicial + 1,
+          data.mes.isEmpty ? 0 : int.parse(data.mes),
+          data.dia.isEmpty ? 0 : int.parse(data.dia));
+    }
+
     return TextField(
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
@@ -73,28 +87,9 @@ class DateField extends StatelessWidget {
                     child: CustomDatePicker(
                       anoInicial: anoInicial,
                       anoFinal: anoFinal,
+                      data: data,
                       onChanged: (ano, mes, dia) {
-                        txt.text = '';
-
-                        if (ano != 0) {
-                          txt.text = '${ano + anoInicial - 1}';
-                        }
-
-                        if (mes != 0) {
-                          txt.text =
-                              '${mes.toString().padLeft(2, '0')}/${txt.text}';
-                        }
-
-                        if (dia != 0) {
-                          txt.text =
-                              '${dia.toString().padLeft(2, '0')}/${txt.text}';
-                        }
-
-                        var spl = txt.text.split("/");
-                        onChanged(
-                            spl.isNotEmpty ? spl[0] : '',
-                            spl.length >= 2 ? spl[1] : '',
-                            spl.length >= 3 ? spl[2] : '');
+                        _updateTexto(ano, mes, dia);
                       },
                     ),
                   ),
@@ -105,5 +100,27 @@ class DateField extends StatelessWidget {
         );
       },
     );
+  }
+
+  _updateTexto(ano, mes, dia) {
+    txt.text = '';
+
+    print('_updateTexto: ${ano}');
+
+    if (ano != 0) {
+      txt.text = '${ano + anoInicial - 1}';
+    }
+
+    if (mes != 0) {
+      txt.text = '${mes.toString().padLeft(2, '0')}/${txt.text}';
+    }
+
+    if (dia != 0) {
+      txt.text = '${dia.toString().padLeft(2, '0')}/${txt.text}';
+    }
+
+    var spl = txt.text.split("/");
+    onChanged(spl.isNotEmpty ? spl[0] : '', spl.length >= 2 ? spl[1] : '',
+        spl.length >= 3 ? spl[2] : '');
   }
 }

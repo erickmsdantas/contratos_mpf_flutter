@@ -2,6 +2,7 @@ import 'package:contratos_mpf/contratados/screens/contratados_screen.dart';
 import 'package:contratos_mpf/contratos/screens/contratos_screen.dart';
 import 'package:contratos_mpf/notificacoes/screens/notificacoes_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'favoritos/screens/favoritos_screen.dart';
 
@@ -18,7 +19,7 @@ class NavMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const FaIcon(FontAwesomeIcons.fileContract),
             title: const Text('Contratos'),
             onTap: () => {
               Navigator.push(
@@ -28,7 +29,7 @@ class NavMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const Icon(Icons.person),
             title: const Text('Contratados'),
             onTap: () => {
               Navigator.push(
@@ -38,7 +39,7 @@ class NavMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const Icon(Icons.favorite),
             title: const Text('Favoritos'),
             onTap: () => {
               Navigator.push(
@@ -48,7 +49,7 @@ class NavMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const Icon(Icons.notifications),
             title: const Text('Notificações'),
             onTap: () => {
               Navigator.push(

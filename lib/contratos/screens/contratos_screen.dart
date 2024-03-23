@@ -37,12 +37,15 @@ class _ContratosScreenState extends State<ContratosScreen> {
               context,
               PageTransition(
                 type: PageTransitionType.bottomToTop,
-                child: ContratosFiltroScreen(filtroContratos: filtroContratos,),
+                child: ContratosFiltroScreen(
+                  filtroContratos: filtroContratos,
+                ),
               ),
             );
 
             setState(() {
               filtroContratos = result;
+              print("set: ${filtroContratos.vigenteInicio}");
             });
           },
           child: const Icon(Icons.filter_list),

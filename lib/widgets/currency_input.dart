@@ -47,13 +47,16 @@ class CurrencyInput extends StatelessWidget {
       {super.key,
       required this.labelText,
       required this.onChanged,
-      String this.initialValue = ''});
+      String this.initialValue = '',
+      required this.readOnly});
 
   String labelText;
 
   String initialValue;
 
   final Function onChanged;
+
+  bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +65,7 @@ class CurrencyInput extends StatelessWidget {
       onChanged: (text) {
         onChanged(text);
       },
+      readOnly: readOnly,
       decoration: InputDecoration(
         label: Row(
           children: [
