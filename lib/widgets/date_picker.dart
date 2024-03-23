@@ -6,10 +6,13 @@ class CustomDatePicker extends StatefulWidget {
       {super.key,
       required this.onChanged,
       required this.anoInicial,
-      required this.anoFinal});
+      required this.anoFinal,
+      required this.data});
 
   int anoInicial;
   int anoFinal;
+
+  ({String ano, String mes, String dia}) data;
 
   Function onChanged;
 
@@ -45,7 +48,12 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
 
   @override
   void initState() {
-    _qtdAnos = widget.anoFinal - widget.anoInicial;
+    _qtdAnos = widget.anoFinal - widget.anoInicial + 1;
+
+    _anoSelecionado = widget.data.ano.isEmpty
+        ? 0
+        : (int.parse(widget.data.ano) - widget.anoInicial + 1);
+
     _atualizarQtdDiasMes();
   }
 
@@ -65,6 +73,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
             squeeze: 1.2,
             useMagnifier: true,
             itemExtent: _kItemExtent,
+            scrollController:
+                FixedExtentScrollController(initialItem: _anoSelecionado),
             onSelectedItemChanged: (int selectedItem) {
               setState(
                 () {
@@ -102,6 +112,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                 setState(() {
                   _mesSelecionado = selectedItem;
                   _atualizarQtdDiasMes();
+                  print('mes alterado: ${_anoSelecionado}');
                   widget.onChanged(
                       _anoSelecionado, _mesSelecionado, _diaSelecionado);
                 });

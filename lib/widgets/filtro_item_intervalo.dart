@@ -12,6 +12,7 @@ class FiltroItemIntervalo extends StatelessWidget {
     required this.onChangedMax,
     double this.initialMin = 0,
     double this.initialMax = 0,
+    required this.readOnly,
   });
 
   String titulo;
@@ -22,9 +23,13 @@ class FiltroItemIntervalo extends StatelessWidget {
   final Function onChangedMin;
   final Function onChangedMax;
 
+  bool readOnly;
+
   @override
   Widget build(BuildContext context) {
     NumberFormat numberFormat = NumberFormat.decimalPattern('pt_BR');
+
+    print(readOnly);
 
     return FiltroItem(
       titulo: titulo,
@@ -34,12 +39,14 @@ class FiltroItemIntervalo extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 5),
               child: CurrencyInput(
-                  labelText: "Mínimo",
-                  initialValue:
-                      initialMin == 0 ? '' : numberFormat.format(initialMin),
-                  onChanged: (value) {
-                    onChangedMin(numberFormat.parse(value));
-                  }),
+                labelText: "Mínimo",
+                initialValue:
+                    initialMin == 0 ? '' : numberFormat.format(initialMin),
+                onChanged: (value) {
+                  onChangedMin(numberFormat.parse(value));
+                },
+                readOnly: readOnly,
+              ),
             ),
           ),
           Expanded(
@@ -52,6 +59,7 @@ class FiltroItemIntervalo extends StatelessWidget {
                 onChanged: (value) {
                   onChangedMax(numberFormat.parse(value));
                 },
+                readOnly: readOnly,
               ),
             ),
           ),

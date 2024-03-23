@@ -236,7 +236,7 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
     CollectionReference<Contrato> collection =
         FirebaseRepository.instance.contratosCollection;
 
-    Query<Contrato> query1 = collection.limit(100); //_buildQuery(collection);
+    Query<Contrato> query1 = collection.limit(100); //orderBy(collection);
     Query query2 = collection.limit(100); //_buildQuery(collection);
 
     if (widget.filtroContratos.unidadesGestoras.length > 0) {
@@ -273,7 +273,7 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
       }
 
       query1 = query1.where('inicio',
-          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate)).orderBy('inicio');
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
     }
 
     if (widget.filtroContratos.vigenteFim.ano.isNotEmpty) {
@@ -286,17 +286,16 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
             int.parse(widget.filtroContratos.vigenteFim.mes),
             int.parse(widget.filtroContratos.vigenteFim.dia));
       } else if (widget.filtroContratos.vigenteFim.mes.isNotEmpty) {
-        dataFinal = DateTime(
-            int.parse(widget.filtroContratos.vigenteFim.ano),
-            int.parse(widget.filtroContratos.vigenteFim.mes),
-            1);
+        dataFinal = DateTime(int.parse(widget.filtroContratos.vigenteFim.ano),
+            int.parse(widget.filtroContratos.vigenteFim.mes), 1);
       } else {
         dataFinal =
             DateTime(int.parse(widget.filtroContratos.vigenteFim.ano), 1, 1);
       }
 
-      query1 = query1.where('termino',
-          isLessThanOrEqualTo: Timestamp.fromDate(dataFinal)).orderBy('termino');
+      query1 = query1
+          .where('termino', isLessThanOrEqualTo: Timestamp.fromDate(dataFinal))
+          .orderBy('termino');
     }
 
     //
@@ -310,8 +309,11 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
     }
 
     if (widget.filtroContratos.valorTotalContrato.max > 0) {
-      query1 = query1.where('valor_total',
-          isLessThanOrEqualTo: widget.filtroContratos.valorTotalContrato.max);
+      query1 = query1
+          .where('valor_total',
+              isLessThanOrEqualTo:
+                  widget.filtroContratos.valorTotalContrato.max)
+          .orderBy('valor_total');
     }
 
     //
@@ -328,7 +330,17 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
           .where('contratado', isLessThanOrEqualTo: textoBusca + '\uf8ff');
     }
 
-    query1 = orderBy(query1);
+//    query1 = orderBy(query1);
+//
+//
+
+    if (widget.filtroContratos.valorTotalContrato.max > 0) {
+      query1 = query1.orderBy('valor_total');
+    }
+
+    if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty) {
+      query1 = query1.orderBy('inicio');
+    }
 
     streams.add(query1.snapshots());
     // /streams.add(query2.snapshots());

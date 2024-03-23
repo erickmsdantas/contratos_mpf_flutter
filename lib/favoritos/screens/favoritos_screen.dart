@@ -71,8 +71,6 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
       return const Text('Sem Favoritos');
     }
 
-    var ugs = ApiService().getUnidadesGestoras();
-
     return FirestoreListView<Contratado>(
       query: collection.where('cpf_cnpj',
           whereIn: contratados), //.orderBy('cpf_cnpj'),
@@ -105,7 +103,7 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
     User? user = FirebaseAuth.instance.currentUser;
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           bottom: const TabBar(
@@ -115,9 +113,6 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
               ),
               Tab(
                 text: 'Contratados',
-              ),
-              Tab(
-                text: 'Unidades',
               ),
             ],
           ),
@@ -139,7 +134,6 @@ class _FavoritosScreenState extends State<FavoritosScreen> {
               children: [
                 _listaContratosFavoritos(snapshot.data!.contratosFavoritos),
                 _listaContratadosFavoritos(snapshot.data!.contratadosFavoritos),
-                _listaContratosFavoritos(snapshot.data!.unidadesFavoritas),
               ],
             );
           },

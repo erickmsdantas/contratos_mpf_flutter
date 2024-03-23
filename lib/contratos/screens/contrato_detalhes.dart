@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contratos_mpf/contratos/models/contrato.dart';
 import 'package:contratos_mpf/favoritos/models/favoritos.dart';
 import 'package:contratos_mpf/firebase_repository.dart';
+import 'package:contratos_mpf/service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,8 @@ class ContratoDetalhes extends StatefulWidget {
 }
 
 class _ContratoDetalhesState extends State<ContratoDetalhes> {
+  var ugs = ApiService().getUnidadesGestoras();
+
   _itemDetalhe(String titulo, Widget widget,
       {double titleSize = 16, FontWeight fontWeight = FontWeight.normal}) {
     return Column(
@@ -59,14 +62,9 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
   _ug() {
     return _itemDetalheBasico(
       "UG",
-      widget.contrato.unidade,
+      ugs[widget.contrato.unidade] ?? '',
     );
   }
-
-  /*_itemFornecido()
-  {
-    return _itemDetalheBasico("Item Fornecido", widget.contrato.itemFornecido);
-  }*/
 
   _nrEdital() {
     return _itemDetalheBasico(

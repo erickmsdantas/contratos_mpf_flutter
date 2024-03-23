@@ -8,10 +8,15 @@ class FiltroItemPeriodo extends StatelessWidget {
   FiltroItemPeriodo(
       {super.key,
       required this.titulo,
+      required this.vigenteInicio,
+      required this.vigenteFim,
       required this.onChangedInicio,
       required this.onChangedFim});
 
   String titulo;
+
+  ({String ano, String mes, String dia}) vigenteInicio;
+  ({String ano, String mes, String dia}) vigenteFim;
 
   Function onChangedInicio;
   Function onChangedFim;
@@ -27,9 +32,11 @@ class FiltroItemPeriodo extends StatelessWidget {
               padding: const EdgeInsets.only(right: 5),
               child: DateField(
                 labelText: 'Início',
+                data: vigenteInicio,
                 onChanged: (ano, mes, dia) {
                   onChangedInicio(ano, mes, dia);
                   print('inicio');
+                  print('onchange: ${ano}');
                 },
               ),
             ),
@@ -39,6 +46,7 @@ class FiltroItemPeriodo extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5),
               child: DateField(
                 labelText: 'Fim',
+                data: vigenteFim,
                 onChanged: (ano, mes, dia) {
                   onChangedFim(ano, mes, dia);
                 },
