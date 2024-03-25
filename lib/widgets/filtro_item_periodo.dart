@@ -1,8 +1,7 @@
-import 'package:contratos_mpf/widgets/currency_input.dart';
-import 'package:contratos_mpf/widgets/date_field.dart';
 import 'package:contratos_mpf/widgets/filtro_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_widgets/date_field.dart';
 
 class FiltroItemPeriodo extends StatelessWidget {
   FiltroItemPeriodo(

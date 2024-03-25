@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contratos_mpf/contratados/models/contratado.dart';
+import 'package:contratos_mpf/contratados/screens/contratados_detalhes.dart';
 import 'package:contratos_mpf/contratos/models/contrato.dart';
 import 'package:contratos_mpf/favoritos/models/favoritos.dart';
 import 'package:contratos_mpf/firebase_repository.dart';
 import 'package:contratos_mpf/service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:page_transition/page_transition.dart';
 
 class ContratoDetalhes extends StatefulWidget {
   ContratoDetalhes({super.key, required this.contrato});
@@ -73,34 +77,6 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
     );
   }
 
-  _unidadeMedida() {
-    return _itemDetalheBasico(
-      "Unidade de Medida",
-      widget.contrato.unidade,
-    );
-  }
-
-  _valorUnitario() {
-    return _itemDetalheBasico(
-      "Valor Unitário",
-      widget.contrato.valorTotalDoContrato,
-    );
-  }
-
-  _quantidade() {
-    return _itemDetalheBasico(
-      "Quantidade",
-      widget.contrato.valorTotalDoContrato,
-    );
-  }
-
-  _valorTotalItem() {
-    return _itemDetalheBasico(
-      "Valor Total do Item",
-      widget.contrato.valorTotalDoContrato,
-    );
-  }
-
   _valorTotalContrato() {
     return _itemDetalheBasico(
       "Valor Total do Contrato",
@@ -121,6 +97,7 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
       ListView.builder(
         //padding: const EdgeInsets.all(8),
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         itemCount: widget.contrato.itens.length,
         itemBuilder: (BuildContext context, int index) {
           var item = widget.contrato.itens[index];
@@ -314,6 +291,26 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
                   subtitle: Text(widget.contrato.contratado),
                   tileColor: Colors.white,
                   trailing: const Icon(Icons.chevron_right),
+                  onTap: () async {
+                    CollectionReference<Contratado> collection =
+                        FirebaseRepository.instance.contratadosCollection;
+
+                    print(widget.contrato.contratado.replaceAll(new RegExp(r"\D"), ""));
+                    var snp = await collection.doc(widget.contrato.contratado.replaceAll(new RegExp(r"\D"), "")).get();
+                    if (snp.exists) {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.leftToRight,
+                          child: ContratadoDetalhes(
+                            contratado: snp.data()!,
+                          ),
+                        ),
+                      );
+                    } else {
+                      print("!exists");
+                    }
+                  },
                 ),
                 //
                 const Divider(height: 1),
@@ -333,13 +330,12 @@ class _ContratoDetalhesState extends State<ContratoDetalhes> {
                   title: Text(widget.contrato.contratado),
                   subtitle: Text(widget.contrato.contratado),
                   tileColor: Colors.white,
-                  trailing: const Icon(Icons.chevron_right),
                 ),
                 //
                 _ug(),
                 _nrEdital(),
                 _valorTotalContrato(),
-                _itens(),
+                Container(child: _itens(),),
               ],
             ),
           ),

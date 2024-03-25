@@ -1,6 +1,7 @@
 import 'package:contratos_mpf/contratados/screens/contratados_screen.dart';
 import 'package:contratos_mpf/contratos/screens/contratos_screen.dart';
 import 'package:contratos_mpf/notificacoes/screens/notificacoes_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -58,6 +59,14 @@ class NavMenu extends StatelessWidget {
               )
             },
           ),
+          Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Sair'),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+          )
         ],
       ),
     );

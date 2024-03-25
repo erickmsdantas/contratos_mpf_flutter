@@ -15,7 +15,7 @@ class ContratadosScreen extends StatefulWidget {
 }
 
 class _ContratadosScreenState extends State<ContratadosScreen> {
-  late List<Contratado> _contratados = [];
+  Situacao _situacao = Situacao.ativos_ou_concluidos;
 
   @override
   void initState() {
@@ -24,7 +24,6 @@ class _ContratadosScreenState extends State<ContratadosScreen> {
   }
 
   void _getData() async {
-    _contratados = (await ApiService().getContratados())!;
     Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {}));
   }
 
@@ -37,14 +36,18 @@ class _ContratadosScreenState extends State<ContratadosScreen> {
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(20),
         ),
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
             PageTransition(
               type: PageTransitionType.bottomToTop,
-              child: const ContratadosFiltroScreen(),
+              child:  ContratadosFiltroScreen(situacao: _situacao,),
             ),
           );
+
+          setState(() {
+            _situacao = result;
+          });
         },
         child: const Icon(Icons.filter_list),
       ),
@@ -52,7 +55,7 @@ class _ContratadosScreenState extends State<ContratadosScreen> {
         title: const Text("CONTRATADOS"),
         centerTitle: true,
       ),
-      body: ContratadosLista(contratados: _contratados),
+      body: ContratadosLista(situacao:_situacao  ),
     );
   }
 }

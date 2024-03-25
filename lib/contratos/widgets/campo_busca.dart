@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CampoBusca extends StatefulWidget {
-  CampoBusca({required this.onChanged});
+  CampoBusca({required this.onChanged, required this.isContratado});
 
   final Function onChanged;
 
+  final bool isContratado;
 
   @override
   State<CampoBusca> createState() => _CampoBuscaState();
@@ -28,11 +29,11 @@ class _CampoBuscaState extends State<CampoBusca> {
               widget.onChanged(text);
             },
             //style: TextStyle(color: Color(0xfff1f1f1)),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: OutlineInputBorder(),
               //filled: true,
               prefixIcon: Icon(Icons.search),
-              labelText: 'Buscar Por Nº Contrato ou CNPJ/CPF',
+              labelText: widget.isContratado ? 'Buscar Por CNPJ/CPF' : 'Buscar Por Número do Contrato',
             ),
           ),
         ),

@@ -1,31 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contratos_mpf/contratados/models/contratado.dart';
 import 'package:contratos_mpf/contratados/screens/contratados_detalhes.dart';
+import 'package:contratos_mpf/contratados/screens/contratados_filtro.dart';
 import 'package:contratos_mpf/firebase_repository.dart';
 import 'package:contratos_mpf/utils/ordem.dart';
 import 'package:contratos_mpf/widgets/multiple_select.dart';
+import 'package:contratos_mpf/widgets/select.dart';
+import 'package:external_path/external_path.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:contratos_mpf/contratos/widgets/campo_busca.dart';
 
-enum ClassificacaoContratados { cnpjcpf, nome, qtdContratos }
+enum ClassificacaoContratados { cnpjcpf, nome }
 
 class ContratadosLista extends StatefulWidget {
-  const ContratadosLista({super.key, required this.contratados});
+  const ContratadosLista({super.key, required this.situacao});
 
-  final List<Contratado> contratados;
+  final Situacao situacao;
 
   @override
   State<ContratadosLista> createState() => _ContratadosListaState();
 }
 
 class _ContratadosListaState extends State<ContratadosLista> {
-  ClassificacaoContratados _classificacaoContrato =
+  ClassificacaoContratados _classificacaoContratado =
       ClassificacaoContratados.cnpjcpf;
 
   OrdemClassificacao _ordemClassificacao = OrdemClassificacao.crescente;
+
+  String textoBusca = '';
+
+  late Query<Contratado> query;
 
   SliverWoltModalSheetPage classificarContratados(
       BuildContext modalSheetContext, TextTheme textTheme) {
@@ -50,49 +57,43 @@ class _ContratadosListaState extends State<ContratadosLista> {
         child: TextButton(
           onPressed: () {
             Navigator.of(modalSheetContext).pop();
+            setState(() {});
           },
           child: const Text("Aplicar"),
         ),
       ),
       child: Column(
         children: [
-          MultipleSelection(
-            groupValue: [_classificacaoContrato],
+          Select(
+            groupValue: _classificacaoContratado,
             itens: const [
-              RadioItem(
+              SelectItem(
                 title: "CPF/CNP",
                 value: ClassificacaoContratados.cnpjcpf,
               ),
-              RadioItem(
+              SelectItem(
                 title: "Nome",
                 value: ClassificacaoContratados.nome,
               ),
-              RadioItem(
-                title: "Quantidade De Contratos",
-                value: ClassificacaoContratados.qtdContratos,
-              )
             ],
             onChange: (ClassificacaoContratados value) {
-              setState(() {
-                _classificacaoContrato = value;
-              });
+              _classificacaoContratado = value;
             },
           ),
           const Divider(),
-          MultipleSelection(
-            groupValue: [_ordemClassificacao],
+          Select(
+            groupValue: _ordemClassificacao,
             itens: const [
-              RadioItem(
+              SelectItem(
                 title: "Crescente",
                 value: OrdemClassificacao.crescente,
               ),
-              RadioItem(
+              SelectItem(
                 title: "Decrescente",
                 value: OrdemClassificacao.decrescente,
               )
             ],
             onChange: (OrdemClassificacao value) {
-              print(value.name);
               _ordemClassificacao = value;
             },
           ),
@@ -130,16 +131,104 @@ class _ContratadosListaState extends State<ContratadosLista> {
             },
           ),
         ),
-        IconButton(icon: const Icon(Icons.download), onPressed: () {}),
+        IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () {
+              showBaixarDialog(context);
+            }),
       ],
     );
+  }
+
+  showBaixarDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Não"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Sim"),
+      onPressed: () async {
+        Navigator.pop(context);
+
+        String path;
+
+        path = await ExternalPath.getExternalStoragePublicDirectory(
+            ExternalPath.DIRECTORY_DOWNLOADS);
+
+        AlertDialog alert = AlertDialog(
+          title: Text("Contratados salvo!"),
+          content: Text("Local: ${path}"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("CSV dos Contratados"),
+      content: Text("Deseja obter um arquivo CSV dos contratados?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Query<Contratado> orderBy(CollectionReference<Contratado> collection) {
+    switch (_classificacaoContratado) {
+      case ClassificacaoContratados.cnpjcpf:
+        return collection.orderBy('cpf_cnpj',
+            descending: _ordemClassificacao == OrdemClassificacao.decrescente);
+      default:
+        return collection.orderBy('nome',
+            descending: _ordemClassificacao == OrdemClassificacao.decrescente);
+    }
   }
 
   Widget criarLista() {
     CollectionReference<Contratado> collection =
         FirebaseRepository.instance.contratadosCollection;
 
-    Query<Contratado> query1 = collection.limit(100);
+    Query<Contratado> query1;
+
+    if (textoBusca.isNotEmpty) {
+      query1 = collection
+          .where('cpf_cnpj', isGreaterThanOrEqualTo: textoBusca)
+          .where('cpf_cnpj', isLessThanOrEqualTo: textoBusca + '\uf8ff');
+    } else {
+      query1 = orderBy(collection);
+
+      if (widget.situacao == Situacao.algum_ativo) {
+        query1 = query1.where('tem_contrato_ativo', isEqualTo: true);
+      } else if (widget.situacao == Situacao.apenas_concluidos) {
+        query1 = query1.where('tem_contrato_ativo', isEqualTo: false);
+      }
+    }
+
+    query = query1;
 
     return FirestoreQueryBuilder<Contratado>(
       query: query1,
@@ -214,9 +303,10 @@ class _ContratadosListaState extends State<ContratadosLista> {
     return Column(
       children: [
         CampoBusca(
+          isContratado: true,
           onChanged: (text) {
             setState(() {
-              //textoBusca = text;
+              textoBusca = text;
             });
           },
         ),

@@ -1,6 +1,6 @@
 class FiltroContratos {
   List<String> unidadesGestoras = [];
-  ({bool ativo, bool concluido}) situacao = (ativo: false, concluido: false);
+  ({bool ativo, bool concluido}) situacao = (ativo: true, concluido: false);
   ({String ano, String mes, String dia}) vigenteInicio =
       (ano: '', mes: '', dia: '');
   ({String ano, String mes, String dia}) vigenteFim =

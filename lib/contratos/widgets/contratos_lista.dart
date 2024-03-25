@@ -231,119 +231,104 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
   }
 
   Widget criarLista() {
-    List<Stream<QuerySnapshot>> streams = [];
-
     CollectionReference<Contrato> collection =
         FirebaseRepository.instance.contratosCollection;
 
-    Query<Contrato> query1 = collection.limit(100); //orderBy(collection);
-    Query query2 = collection.limit(100); //_buildQuery(collection);
-
-    if (widget.filtroContratos.unidadesGestoras.length > 0) {
-      query1 =
-          query1.where('ug', whereIn: widget.filtroContratos.unidadesGestoras);
-    }
-
-    if (widget.filtroContratos.situacao.ativo !=
-        widget.filtroContratos.situacao.concluido) {
-      if (widget.filtroContratos.situacao.ativo) {
-        query1 = query1.where('situacao', isEqualTo: 'ativo');
-      } else {
-        query1 = query1.where('situacao', isEqualTo: 'concluído');
-      }
-    }
-
-    if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty) {
-      DateTime startDate;
-
-      if (widget.filtroContratos.vigenteInicio.mes.isNotEmpty &&
-          widget.filtroContratos.vigenteInicio.dia.isNotEmpty) {
-        startDate = DateTime(
-            int.parse(widget.filtroContratos.vigenteInicio.ano),
-            int.parse(widget.filtroContratos.vigenteInicio.mes),
-            int.parse(widget.filtroContratos.vigenteInicio.dia));
-      } else if (widget.filtroContratos.vigenteInicio.mes.isNotEmpty) {
-        startDate = DateTime(
-            int.parse(widget.filtroContratos.vigenteInicio.ano),
-            int.parse(widget.filtroContratos.vigenteInicio.mes),
-            1);
-      } else {
-        startDate =
-            DateTime(int.parse(widget.filtroContratos.vigenteInicio.ano), 1, 1);
-      }
-
-      query1 = query1.where('inicio',
-          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
-    }
-
-    if (widget.filtroContratos.vigenteFim.ano.isNotEmpty) {
-      DateTime dataFinal;
-
-      if (widget.filtroContratos.vigenteFim.mes.isNotEmpty &&
-          widget.filtroContratos.vigenteFim.dia.isNotEmpty) {
-        dataFinal = DateTime(
-            int.parse(widget.filtroContratos.vigenteFim.ano),
-            int.parse(widget.filtroContratos.vigenteFim.mes),
-            int.parse(widget.filtroContratos.vigenteFim.dia));
-      } else if (widget.filtroContratos.vigenteFim.mes.isNotEmpty) {
-        dataFinal = DateTime(int.parse(widget.filtroContratos.vigenteFim.ano),
-            int.parse(widget.filtroContratos.vigenteFim.mes), 1);
-      } else {
-        dataFinal =
-            DateTime(int.parse(widget.filtroContratos.vigenteFim.ano), 1, 1);
-      }
-
-      query1 = query1
-          .where('termino', isLessThanOrEqualTo: Timestamp.fromDate(dataFinal))
-          .orderBy('termino');
-    }
-
-    //
-    //
-    //
-
-    if (widget.filtroContratos.valorTotalContrato.min > 0) {
-      query1 = query1.where('valor_total',
-          isGreaterThanOrEqualTo:
-              widget.filtroContratos.valorTotalContrato.min);
-    }
-
-    if (widget.filtroContratos.valorTotalContrato.max > 0) {
-      query1 = query1
-          .where('valor_total',
-              isLessThanOrEqualTo:
-                  widget.filtroContratos.valorTotalContrato.max)
-          .orderBy('valor_total');
-    }
-
-    //
-    //
-    //
+    Query<Contrato> query1;
 
     if (textoBusca.isNotEmpty) {
-      query1 = query1
+      query1 = collection
           .where('nr_contrato', isGreaterThanOrEqualTo: textoBusca)
           .where('nr_contrato', isLessThanOrEqualTo: textoBusca + '\uf8ff');
+    } else {
+      query1 = collection.limit(1000);
 
-      query2 = query2
-          .where('contratado', isGreaterThanOrEqualTo: textoBusca)
-          .where('contratado', isLessThanOrEqualTo: textoBusca + '\uf8ff');
+      if (widget.filtroContratos.unidadesGestoras.length > 0) {
+        query1 = query1.where('ug',
+            whereIn: widget.filtroContratos.unidadesGestoras);
+      }
+
+      if (widget.filtroContratos.situacao.ativo !=
+          widget.filtroContratos.situacao.concluido) {
+        if (widget.filtroContratos.situacao.ativo) {
+          query1 = query1.where('situacao', isEqualTo: 'ativo');
+        } else {
+          query1 = query1.where('situacao', isEqualTo: 'concluído');
+        }
+      }
+
+      if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty ||
+          widget.filtroContratos.vigenteFim.ano.isNotEmpty) {
+        if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty) {
+          DateTime startDate;
+
+          if (widget.filtroContratos.vigenteInicio.mes.isNotEmpty &&
+              widget.filtroContratos.vigenteInicio.dia.isNotEmpty) {
+            startDate = DateTime(
+                int.parse(widget.filtroContratos.vigenteInicio.ano),
+                int.parse(widget.filtroContratos.vigenteInicio.mes),
+                int.parse(widget.filtroContratos.vigenteInicio.dia));
+          } else if (widget.filtroContratos.vigenteInicio.mes.isNotEmpty) {
+            startDate = DateTime(
+                int.parse(widget.filtroContratos.vigenteInicio.ano),
+                int.parse(widget.filtroContratos.vigenteInicio.mes),
+                1);
+          } else {
+            startDate = DateTime(
+                int.parse(widget.filtroContratos.vigenteInicio.ano), 1, 1);
+          }
+
+          query1 = query1.where('inicio',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+        } else if (widget.filtroContratos.vigenteFim.ano.isNotEmpty) {
+          DateTime dataFinal;
+
+          if (widget.filtroContratos.vigenteFim.mes.isNotEmpty &&
+              widget.filtroContratos.vigenteFim.dia.isNotEmpty) {
+            dataFinal = DateTime(
+                int.parse(widget.filtroContratos.vigenteFim.ano),
+                int.parse(widget.filtroContratos.vigenteFim.mes),
+                int.parse(widget.filtroContratos.vigenteFim.dia));
+          } else if (widget.filtroContratos.vigenteFim.mes.isNotEmpty) {
+            dataFinal = DateTime(
+                int.parse(widget.filtroContratos.vigenteFim.ano),
+                int.parse(widget.filtroContratos.vigenteFim.mes),
+                1);
+          } else {
+            dataFinal = DateTime(
+                int.parse(widget.filtroContratos.vigenteFim.ano), 1, 1);
+          }
+
+          query1 = query1
+              .where('termino',
+                  isLessThanOrEqualTo: Timestamp.fromDate(dataFinal))
+              .orderBy('termino');
+        }
+      } else {
+        if (widget.filtroContratos.valorTotalContrato.min > 0) {
+          query1 = query1.where('valor_total',
+              isGreaterThanOrEqualTo:
+                  widget.filtroContratos.valorTotalContrato.min);
+        }
+
+        if (widget.filtroContratos.valorTotalContrato.max > 0) {
+          query1 = query1
+              .where('valor_total',
+                  isLessThanOrEqualTo:
+                      widget.filtroContratos.valorTotalContrato.max);
+        }
+      }
+
+      if (widget.filtroContratos.valorTotalContrato.max > 0) {
+        query1 = query1.orderBy('valor_total');
+      }
+
+      if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty) {
+        query1 = query1.orderBy('inicio');
+      }
+
+      query1 = orderBy(query1);
     }
-
-//    query1 = orderBy(query1);
-//
-//
-
-    if (widget.filtroContratos.valorTotalContrato.max > 0) {
-      query1 = query1.orderBy('valor_total');
-    }
-
-    if (widget.filtroContratos.vigenteInicio.ano.isNotEmpty) {
-      query1 = query1.orderBy('inicio');
-    }
-
-    streams.add(query1.snapshots());
-    // /streams.add(query2.snapshots());
 
     return FirestoreQueryBuilder<Contrato>(
       query: query1,
@@ -421,6 +406,7 @@ class _ContratosModoListaState extends State<ContratosModoLista> {
     return Column(
       children: [
         CampoBusca(
+          isContratado: false,
           onChanged: (text) {
             setState(() {
               textoBusca = text;

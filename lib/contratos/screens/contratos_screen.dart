@@ -45,7 +45,6 @@ class _ContratosScreenState extends State<ContratosScreen> {
 
             setState(() {
               filtroContratos = result;
-              print("set: ${filtroContratos.vigenteInicio}");
             });
           },
           child: const Icon(Icons.filter_list),
@@ -72,7 +71,7 @@ class _ContratosScreenState extends State<ContratosScreen> {
         body: Container(
             child: _modoExibicao == ModoExibicao.lista
                 ? ContratosModoLista(filtroContratos: filtroContratos)
-                : ContratosModoTabela()),
+                : ContratosModoTabela(filtroContratos: filtroContratos)),
       ),
     );
   }

@@ -46,6 +46,14 @@ dependencies:
   firebase_ui_firestore: any
   intl: ^0.18.1
 
+  external_path: ^1.0.3
+
+  my_widgets:
+    git:
+      url: https://github.com/erickmsdantas/my_widgets.git
+      ref: master
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

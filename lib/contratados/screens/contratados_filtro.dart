@@ -2,10 +2,12 @@ import 'package:contratos_mpf/widgets/filtro_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum Situacao { apenas_ativos, apenas_concluidos, ativos_ou_concluidos }
+enum Situacao { algum_ativo, apenas_concluidos, ativos_ou_concluidos }
 
 class ContratadosFiltroScreen extends StatefulWidget {
-  const ContratadosFiltroScreen({super.key});
+  const ContratadosFiltroScreen({super.key, required this.situacao});
+
+  final Situacao situacao;
 
   @override
   State<ContratadosFiltroScreen> createState() =>
@@ -17,6 +19,7 @@ class _ContratadosFiltroScreenState extends State<ContratadosFiltroScreen> {
 
   @override
   void initState() {
+    _situacao = widget.situacao;
     super.initState();
   }
 
@@ -39,10 +42,10 @@ class _ContratadosFiltroScreenState extends State<ContratadosFiltroScreen> {
             ),
           ),
           ListTile(
-            title: const Text('Apenas Ativos'),
+            title: const Text('Algum Ativo'),
             leading: Radio<Situacao>(
               groupValue: _situacao,
-              value: Situacao.apenas_ativos,
+              value: Situacao.algum_ativo,
               onChanged: (Situacao? value) {
                 setState(() {
                   _situacao = value!;
@@ -89,11 +92,15 @@ class _ContratadosFiltroScreenState extends State<ContratadosFiltroScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () { Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: const Text("Restaurar"),
                   ),
                   TextButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {
+                      Navigator.pop(context, _situacao);
+                    },
                     child: const Text("Aplicar"),
                   ),
                 ],

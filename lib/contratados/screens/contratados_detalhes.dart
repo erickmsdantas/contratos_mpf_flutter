@@ -51,7 +51,6 @@ class _ContratadoDetalhesState extends State<ContratadoDetalhes>
           .where('situacao', isEqualTo: situacao), //.orderBy('cpf_cnpj'),
       itemBuilder: (context, snapshot) {
         Contrato e = snapshot.data();
-        print('firestore');
         return ListTile(
           title: Text(e.numero),
           subtitle: Text(ugs[e.unidade] ?? ''),

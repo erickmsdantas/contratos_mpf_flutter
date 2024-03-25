@@ -5,7 +5,7 @@ class Contrato {
   String numero = '';
   String unidade = '';
   String objeto = '';
-  DateTime dataPublicacao = DateTime.now();
+  String dataPublicacao = '';
   String nrEdital = '';
   DateTime inicioVigencia = DateTime.now();
   DateTime terminoVigencia = DateTime.now();
@@ -22,8 +22,7 @@ class Contrato {
     numero = id.toString().replaceAll('.', '/');
     unidade = json['ug'];
     objeto = json['objeto'];
-    dataPublicacao =
-        DateTimeUtils().parseDate(json['data_publicacao'].toString())!;
+    dataPublicacao = json['data_publicacao'];
     nrEdital = json['nr_edital'];
     inicioVigencia = json['inicio'].toDate();
     terminoVigencia = json['termino'].toDate();

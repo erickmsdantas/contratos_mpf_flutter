@@ -23,11 +23,11 @@ class _NotificacoesScreenState extends State<NotificacoesScreen> {
   }
 
   void _getData() async {
-    var contratos = (await ApiService().getContratos())!;
+    /*var contratos = (await ApiService().getContratos())!;
     setState(() {
       notificacoesByData[DateTime(2023, 9)] = contratos;
       notificacoesByData[DateTime(2023, 10)] = contratos;
-    });
+    });*/
   }
 
   Widget mostratNotificacao(DateTime data, List<Contrato> contratos) {

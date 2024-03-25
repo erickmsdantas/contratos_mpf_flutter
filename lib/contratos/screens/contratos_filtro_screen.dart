@@ -1,7 +1,5 @@
 import 'package:contratos_mpf/service.dart';
 import 'package:contratos_mpf/utils/filtro_contratos.dart';
-import 'package:contratos_mpf/widgets/combo_box.dart';
-import 'package:contratos_mpf/widgets/select.dart';
 import 'package:contratos_mpf/widgets/radio_button.dart';
 import 'package:contratos_mpf/widgets/multiple_select.dart';
 import 'package:contratos_mpf/widgets/filtro_item.dart';
@@ -10,6 +8,7 @@ import 'package:contratos_mpf/widgets/filtro_item_periodo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_widgets/combo_box.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 enum ModoExibicao { lista, tabela }
@@ -25,7 +24,6 @@ class ContratosFiltroScreen extends StatefulWidget {
 
 class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
   final unidadesGestoras = ApiService().getUnidadesGestoras();
-  List<String> _unidadesGestorasSelecionadas = [];
 
   FiltroContratos filtroContratos = FiltroContratos();
 
@@ -203,7 +201,6 @@ class _ContratosFiltroScreenState extends State<ContratosFiltroScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      print("apply: ${filtroContratos.vigenteInicio}");
                       Navigator.pop(context, filtroContratos);
                     },
                     child: const Text("Aplicar"),
